@@ -3,7 +3,7 @@ using WardrobeOnline.DAL.Entities;
 
 namespace WardrobeOnline.DAL
 {
-    public class WardrobeContext : DbContext
+    public class WardrobePostgreContext : DbContext
     {
         private string _connection = "Host=localhost;Port=5432;Database=wardrobe;Username=postgres;Password=root";
 

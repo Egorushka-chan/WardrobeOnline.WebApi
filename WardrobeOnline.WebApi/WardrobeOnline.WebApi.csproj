@@ -13,4 +13,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WardrobeOnline.BLL\WardrobeOnline.BLL.csproj" />
+    <ProjectReference Include="..\WardrobeOnline.DAL\WardrobeOnline.DAL.csproj" />
+  </ItemGroup>
+
 </Project>

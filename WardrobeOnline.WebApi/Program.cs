@@ -1,6 +1,14 @@
+global using WardrobeOnline.DAL;
+global using WardrobeOnline.WebApi;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+// Связь с остальными слоями
+builder.Services.AddBusinessLayer();
+builder.Services.AddDbContext<WardrobePostgreContext>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

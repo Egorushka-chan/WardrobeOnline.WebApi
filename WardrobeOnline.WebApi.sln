@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WardrobeOnline.WebApi", "WardrobeOnline.WebApi\WardrobeOnline.WebApi.csproj", "{7175EC2C-623F-46DC-9060-E7BA83E1CE95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WardrobeOnline.WebApi", "WardrobeOnline.WebApi\WardrobeOnline.WebApi.csproj", "{7175EC2C-623F-46DC-9060-E7BA83E1CE95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WardrobeOnline.BLL", "WardrobeOnline.BLL\WardrobeOnline.BLL.csproj", "{B2AAEABB-A6E9-4785-B5E7-EAF64CC4D249}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WardrobeOnline.DAL", "WardrobeOnline.DAL\WardrobeOnline.DAL.csproj", "{DA1AB157-1E71-47D4-A26E-0694B7ED47CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WardrobeOnline.DAL", "WardrobeOnline.DAL\WardrobeOnline.DAL.csproj", "{DA1AB157-1E71-47D4-A26E-0694B7ED47CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WardrobeOnline.BLL", "WardrobeOnline.BLL\WardrobeOnline.BLL.csproj", "{B708D250-576C-4B6D-9910-2792BFAFC34B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{7175EC2C-623F-46DC-9060-E7BA83E1CE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7175EC2C-623F-46DC-9060-E7BA83E1CE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7175EC2C-623F-46DC-9060-E7BA83E1CE95}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2AAEABB-A6E9-4785-B5E7-EAF64CC4D249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2AAEABB-A6E9-4785-B5E7-EAF64CC4D249}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2AAEABB-A6E9-4785-B5E7-EAF64CC4D249}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2AAEABB-A6E9-4785-B5E7-EAF64CC4D249}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA1AB157-1E71-47D4-A26E-0694B7ED47CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA1AB157-1E71-47D4-A26E-0694B7ED47CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1AB157-1E71-47D4-A26E-0694B7ED47CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1AB157-1E71-47D4-A26E-0694B7ED47CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B708D250-576C-4B6D-9910-2792BFAFC34B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B708D250-576C-4B6D-9910-2792BFAFC34B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B708D250-576C-4B6D-9910-2792BFAFC34B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B708D250-576C-4B6D-9910-2792BFAFC34B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

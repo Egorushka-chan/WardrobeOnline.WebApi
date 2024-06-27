@@ -1,14 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-WardrobeOnline.BLL-f6c82186-c318-4598-843a-2b15a9287951</UserSecretsId>
-    <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Models\Implementations\" />
+    <Folder Include="Models\Interfaces\" />
   </ItemGroup>
+
 </Project>

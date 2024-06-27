@@ -3,34 +3,43 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WardrobeOnline.WebApi.Controllers
 {
+    /// <summary>
+    /// Пока только заглушки
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ClothesController : ControllerBase
     {
-        [HttpGet]
-        public JsonResult GetPersonClothes(int id, int token)
+        [HttpGet("PersonClothes/{id}")]
+        public IResult GetPersonClothes(int id)
         {
             throw new NotImplementedException();
         }
-        [HttpGet]
-        public JsonResult GetCloth(int id, int token)
+        [HttpGet("{id}")]
+        public IResult GetCloth(int id)
         {
             throw new NotImplementedException();
         }
-        [HttpPost]
-        public JsonResult UpdateCloth(int id, int token)
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpDelete]
-        public JsonResult DeleteCloth(int id, int token)
+        [HttpPost("Add/{name}")]
+        public IResult AddCloth(string name)
         {
             throw new NotImplementedException();
         }
 
-        [HttpPost]
-        public JsonResult PostPhoto(int id, int token)
+        [HttpPost("Update/{id}")]
+        public IResult UpdateCloth(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpDelete("{id}")]
+        public IResult DeleteCloth(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost("Photo/{id}")]
+        public IResult PostPhoto(int id)
         {
             throw new NotImplementedException();
         }
