@@ -1,25 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WardrobeOnline.DAL.Entities;
 
 namespace WardrobeOnline.DAL
 {
     public class WardrobeContext : DbContext
     {
-        private string _connection = "Host=localhost;Port=5432;Database=wardrobe;Username=User2024;Password=root";
-        //public WardrobeContext(string connection)
+        private string _connection = "Host=localhost;Port=5432;Database=wardrobe;Username=postgres;Password=root";
+
+        //public WardrobeContext(string connection) : base()
         //{
         //    _connection = connection;
         //}
+
+        //public WardrobeContext(){}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
                 .UseNpgsql(_connection);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Photo>()
+                .Property(e => e.IsDBStored)
+                .HasDefaultValue(false);
         }
 
         public DbSet<Person> Persons { get; set; }

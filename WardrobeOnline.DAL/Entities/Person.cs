@@ -13,7 +13,8 @@ namespace WardrobeOnline.DAL.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         [Required]
-        public string? Name { get; set; }
-        public virtual ICollection<Complection>? Complections { get; set; }
+        public string Name { get; set; }
+        public string? Type {get; set; } // Не только люди могут одеваться
+        public virtual ICollection<Complection> Complections { get; set; } = new List<Complection>();
     }
 }

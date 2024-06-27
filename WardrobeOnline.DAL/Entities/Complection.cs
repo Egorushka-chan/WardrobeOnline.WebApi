@@ -17,7 +17,7 @@ namespace WardrobeOnline.DAL.Entities
         [Required]
         public int Growth { get; set; }
         public int Force { get;  set;}
-        [Required]
+        [Required, ForeignKey("PersonForeignKey")]
         public int PersonID { get; set; }
         public virtual Person? Person { get; set; }
     }

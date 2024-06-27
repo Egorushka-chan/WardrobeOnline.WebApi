@@ -12,9 +12,9 @@ namespace WardrobeOnline.DAL.Entities
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID {get; set;}
-        [Required]
+        [Required, ForeignKey("ClothForeignKey")]
         public int ClothID { get; set;}
-        [Required]
+        [Required, ForeignKey("MaterialForeignKey")]
         public int MaterialID { get; set;}
         public virtual Cloth? Cloth { get; set;}
         public virtual Material? Material { get; set;}
