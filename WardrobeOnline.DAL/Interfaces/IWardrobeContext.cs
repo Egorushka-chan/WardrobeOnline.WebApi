@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WardrobeOnline.DAL.Entities;
 
-namespace WardrobeOnline.DAL
+namespace WardrobeOnline.DAL.Interfaces
 {
     public interface IWardrobeContext // а как тогда с подключениями работать? Делать фасад над контекстами?
     {
@@ -16,9 +16,9 @@ namespace WardrobeOnline.DAL
         public DbSet<Set> Sets { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<SetHasClothes> SetHasClothes { get; set; }
-        public DbSet<Cloth> Clothes {  get; set; }
-        public DbSet<Material> Materials {  get; set; }
-        public DbSet<ClothHasMaterials> ClothHasMaterials {  get; set; }
+        public DbSet<Cloth> Clothes { get; set; }
+        public DbSet<Material> Materials { get; set; }
+        public DbSet<ClothHasMaterials> ClothHasMaterials { get; set; }
         public DbSet<Photo> Photos { get; set; }
     }
 }

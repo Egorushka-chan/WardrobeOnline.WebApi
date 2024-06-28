@@ -44,6 +44,7 @@ namespace WardrobeOnline.WebApi.Controllers
                 {
                     name = "Incorrect name"
                 });
+                
             }
 
             Person person = new Person()
