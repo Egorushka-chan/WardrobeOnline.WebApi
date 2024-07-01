@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WardrobeOnline.DAL.Interfaces;
 
 namespace WardrobeOnline.DAL.Entities
 {
-    public partial class Photo
+    public partial class Photo : IEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }

@@ -8,8 +8,8 @@ using WardrobeOnline.DAL.Interfaces;
 
 namespace WardrobeOnline.BLL.Models.Interfaces
 {
-    public interface IPageServiceProvider
+    public interface IPageServiceProvider<TEntity>
     {
-        public T GetPagedQuantityOf<T>(int pageIndex, int pageSize) where T : IEntity;
+        public TEntity GetPagedQuantityOf(int pageIndex, int pageSize);
     }
 }
