@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WardrobeOnline.BLL.Models.Interfaces;
+﻿using WardrobeOnline.BLL.Repository.Interfaces;
 using WardrobeOnline.DAL.Entities;
 
-namespace WardrobeOnline.BLL.Models.Implementations
+namespace WardrobeOnline.BLL.Repository.Implementations
 {
     public class ClothPageProvider : IPageServiceProvider<Cloth>
     {

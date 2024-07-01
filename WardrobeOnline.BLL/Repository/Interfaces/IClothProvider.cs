@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WardrobeOnline.DAL.Entities;
 
-namespace WardrobeOnline.BLL.Models.Interfaces
+namespace WardrobeOnline.BLL.Repository.Interfaces
 {
     public interface IClothProvider
     {

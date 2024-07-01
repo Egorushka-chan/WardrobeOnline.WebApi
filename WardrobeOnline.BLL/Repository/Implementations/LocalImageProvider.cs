@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using WardrobeOnline.BLL.Models.Interfaces;
+using WardrobeOnline.BLL.Repository.Interfaces;
 
-namespace WardrobeOnline.BLL.Models.Implementations
+namespace WardrobeOnline.BLL.Repository.Implementations
 {
-    public class WebImageProvider : IImageProvider
+    public class LocalImageProvider : IImageProvider
     {
         public string GetImageLink(string imageID)
         {

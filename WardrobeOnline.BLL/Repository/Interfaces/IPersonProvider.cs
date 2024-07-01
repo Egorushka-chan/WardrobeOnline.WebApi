@@ -1,6 +1,6 @@
 ﻿using WardrobeOnline.DAL.Entities;
 
-namespace WardrobeOnline.BLL.Models.Interfaces
+namespace WardrobeOnline.BLL.Repository.Interfaces
 {
     public interface IPersonProvider
     {

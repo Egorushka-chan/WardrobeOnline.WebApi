@@ -7,7 +7,7 @@ builder.Services.AddControllers();
 
 // Связь с остальными слоями
 builder.Services.AddBusinessLayer();
-builder.Services.AddDbContext<WardrobePostgreContext>();
+builder.Services.AddDbContext<WardrobeContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

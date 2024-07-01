@@ -17,5 +17,6 @@ namespace WardrobeOnline.DAL.Entities
         public string Name { get; set; }
         public string? Type {get; set; } // Не только люди могут одеваться
         public virtual ICollection<Complection> Complections { get; set; } = new List<Complection>();
+        
     }
 }
