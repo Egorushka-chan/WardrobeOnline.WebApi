@@ -35,7 +35,7 @@ namespace WardrobeOnline.WebApi.Controllers
         /// <param name="name"></param>
         /// <param name="dbContext"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<IResult> CreatePerson(string name, [FromServices] WardrobePostgreContext dbContext) 
         {
             if (string.IsNullOrEmpty(name))

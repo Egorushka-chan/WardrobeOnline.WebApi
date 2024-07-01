@@ -10,7 +10,7 @@ namespace WardrobeOnline.WebApi.Controllers
     [ApiController]
     public class ClothesController : ControllerBase
     {
-        [HttpGet("PersonClothes/{id}")]
+        [HttpGet("Person/{id}")]
         public IResult GetPersonClothes(int id)
         {
             throw new NotImplementedException();
