@@ -7,20 +7,6 @@ namespace WardrobeOnline.DAL
 
     public class WardrobeContext : DbContext, IWardrobeContext
     {
-        //private string _connection = "Host=localhost;Port=5432;Database=wardrobe;Username=postgres;Password=root";
-
-        //public WardrobeContext(string connection) : base()
-        //{
-        //    _connection = connection;
-        //}
-
-        //public WardrobeContext(){}
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder
-        //        .UseNpgsql(_connection);
-        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,8 +22,13 @@ namespace WardrobeOnline.DAL
 
         public WardrobeContext Context() => this;
 
+        public Task<int> SaveChangesAsync()
+        {
+            return base.SaveChangesAsync();
+        }
+
         public DbSet<Person> Persons { get; set; }
-        public DbSet<Complection> Complections { get; set; }
+        public DbSet<Physique> Physiques { get; set; }
         public DbSet<Set> Sets { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<SetHasClothes> SetHasClothes { get; set; }

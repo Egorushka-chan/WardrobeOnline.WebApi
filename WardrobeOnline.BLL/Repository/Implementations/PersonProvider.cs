@@ -10,6 +10,7 @@ namespace WardrobeOnline.BLL.Repository.Implementations
 {
     public class PersonProvider : IEntityProvider<PersonDTO>
     {
+        // TODO: соединить провайдер персон с базой
         public void Add(PersonDTO entity)
         {
             throw new NotImplementedException();

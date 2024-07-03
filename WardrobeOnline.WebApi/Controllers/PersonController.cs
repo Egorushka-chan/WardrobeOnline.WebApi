@@ -62,25 +62,25 @@ namespace WardrobeOnline.WebApi.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpGet("complection/{token}/{id}")]
-        public IResult GetPersonComplections(int id, int token)
+        [HttpGet("physique/{token}/{id}")]
+        public IResult GetPersonPhysiques(int id, int token)
         {
             throw new NotImplementedException();
         }
 
-        [HttpPost("complection/{token}")]
-        public IResult CreateComplection(int token)
+        [HttpPost("physique/{token}")]
+        public IResult CreatePhysique(int token)
         {
             throw new NotImplementedException();
         }
 
-        [HttpDelete("complection/{id}/{token}")]
-        public IResult DeleteComplection(int id, int token)
+        [HttpDelete("physique/{id}/{token}")]
+        public IResult DeletePhysique(int id, int token)
         {
             throw new NotImplementedException();
         }
-        [HttpPost("complection/update/{id}/{token}")]
-        public IResult UpdateComplection(int id, int token)
+        [HttpPost("physique/update/{id}/{token}")]
+        public IResult UpdatePhysique(int id, int token)
         {
             throw new NotImplementedException();
         }

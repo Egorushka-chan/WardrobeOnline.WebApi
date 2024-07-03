@@ -8,19 +8,20 @@ using WardrobeOnline.BLL.Repository.Interfaces;
 
 namespace WardrobeOnline.BLL.Repository.Implementations
 {
-    public class ComplectionProvider : IEntityProvider<ComplectionDTO>
+    public class PhysiqueProvider : IEntityProvider<PhysiqueDTO>
     {
-        public void Add(ComplectionDTO entity)
+        // TODO: соединить провайдер комплекции с базой
+        public void Add(PhysiqueDTO entity)
         {
             throw new NotImplementedException();
         }
 
-        public ComplectionDTO Get(int id)
+        public PhysiqueDTO Get(int id)
         {
             throw new NotImplementedException();
         }
 
-        public IReadOnlyCollection<ComplectionDTO> GetAll()
+        public IReadOnlyCollection<PhysiqueDTO> GetAll()
         {
             throw new NotImplementedException();
         }
@@ -30,12 +31,12 @@ namespace WardrobeOnline.BLL.Repository.Implementations
             throw new NotImplementedException();
         }
 
-        public void Remove(ComplectionDTO entity)
+        public void Remove(PhysiqueDTO entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(ComplectionDTO entity)
+        public void Update(PhysiqueDTO entity)
         {
             throw new NotImplementedException();
         }

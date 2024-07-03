@@ -8,6 +8,7 @@ namespace WardrobeOnline.BLL.Repository.Implementations
 {
     public class ClothProvider(IRepository<Cloth> repository) : IEntityProvider<ClothDTO>
     {
+        // TODO: соединить провайдер одежды с базой
         private IRepository<Cloth> _repository = repository;
         public void Add(ClothDTO entity)
         {

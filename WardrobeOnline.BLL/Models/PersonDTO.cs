@@ -14,17 +14,22 @@ namespace WardrobeOnline.BLL.Models
         public int ID { get; init; } = iD;
         public string Name { get; init; } = name;
         public string? Type { get; init; }
-        public IReadOnlyList<int>? ComplectionIDs { get; init; }
+        public IReadOnlyList<int>? PhysiqueIDs { get; init; }
 
-        internal Person TranslateToDB(ITranslator translator)
+        public static explicit operator Person(PersonDTO self)
         {
             Person person = new()
             {
-                ID = ID,
-                Name = Name,
-                Type = Type,
+                ID = self.ID, 
+                Name = self.Name,
+                Type = self.Type,
             };
             return person;
         }
+
+        //internal Person TranslateToDB(ITranslator translator)
+        //{
+            
+        //}
     }
 }

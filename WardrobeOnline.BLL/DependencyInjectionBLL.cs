@@ -12,13 +12,13 @@ namespace WardrobeOnline.BLL
         public static void AddBusinessLayer(this IServiceCollection services, string imageServerType = "local", string imagePath="/")
         {
             services.AddTransient<IEntityProvider<ClothDTO>, ClothProvider>();
-            services.AddTransient<IEntityProvider<ComplectionDTO>, ComplectionProvider>();
+            services.AddTransient<IEntityProvider<PhysiqueDTO>, PhysiqueProvider>();
             services.AddTransient<IEntityProvider<SetDTO>, SetProvider>();
             services.AddTransient<IEntityProvider<PersonDTO>, PersonProvider>();
 
             services.AddTransient<IPageServiceProvider<Person>, PageProvider<Person>>();
             services.AddTransient<IPageServiceProvider<Set>, PageProvider<Set>>();
-            services.AddTransient<IPageServiceProvider<Complection>, PageProvider<Complection>>();
+            services.AddTransient<IPageServiceProvider<Physique>, PageProvider<Physique>>();
             services.AddTransient<IPageServiceProvider<Cloth>, PageProvider<Cloth>>();
 
             if(imageServerType == "web")
@@ -30,7 +30,7 @@ namespace WardrobeOnline.BLL
                 services.AddSingleton<IImageProvider, LocalImageProvider>();
             }
 
-            services.AddTransient<ITranslator, Translator>();
+            services.AddTransient<ICastHelper, CastHelper>();
             services.AddTransient<IGeneralInfoProvider, GeneralInfoProvider>();
         }
     }

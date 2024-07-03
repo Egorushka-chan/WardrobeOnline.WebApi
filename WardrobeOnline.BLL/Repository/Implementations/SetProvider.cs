@@ -10,6 +10,7 @@ namespace WardrobeOnline.BLL.Repository.Implementations
 {
     public class SetProvider : IEntityProvider<SetDTO>
     {
+        // TODO: соединить провайдер комплектов с базой
         public void Add(SetDTO entity)
         {
             throw new NotImplementedException();

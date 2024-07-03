@@ -7,11 +7,11 @@ namespace WardrobeOnline.BLL.Repository.Extensions
 {
     internal static class EntityExtensions
     {
-        internal static ClothDTO TranslateToDTO(this Cloth cloth, ITranslator translator)
+        internal static ClothDTO TranslateToDTO(this Cloth cloth, ICastHelper translator)
         {
             List<string> photoPath = translator.GetPhotoPaths(cloth.Photos);
 
-            List<string> materials = translator.GetClothMaterialPaths(cloth);
+            List<string> materials = translator.GetClothMaterialNames(cloth);
 
             ClothDTO clothDTO = new(cloth.ID, cloth.Name)
             {
@@ -24,30 +24,30 @@ namespace WardrobeOnline.BLL.Repository.Extensions
             return clothDTO;
         }
 
-        internal static PersonDTO TranslateToDTO(this Person person, ITranslator translator) 
+        internal static PersonDTO TranslateToDTO(this Person person, ICastHelper translator) 
         {
             PersonDTO personDTO = new PersonDTO(person.ID, person.Name)
             {
                 Type = person.Type,
-                ComplectionIDs = translator.GetPersonComplectionsIDs(person)
+                PhysiqueIDs = translator.GetPersonPhysiqueIDs(person)
             };
             return personDTO;
         }
 
-        internal static ComplectionDTO TranslateToDTO(this Complection complection, ITranslator translator)
+        internal static PhysiqueDTO TranslateToDTO(this Physique physique, ICastHelper translator)
         {
-            ComplectionDTO complectionDTO = new ComplectionDTO(complection.ID, complection.Growth, complection.Weight, complection.PersonID)
+            PhysiqueDTO physiqueDTO = new PhysiqueDTO(physique.ID, physique.Growth, physique.Weight, physique.PersonID)
             {
-                Description = complection.Description,
-                Force = complection.Force,
-                SetIDs = translator.GetComplectionSets(complection)
+                Description = physique.Description,
+                Force = physique.Force,
+                SetIDs = translator.GetPhysiqueSets(physique)
             };
-            return complectionDTO;
+            return physiqueDTO;
         }
 
-        internal static SetDTO TranslateToDTO(this Set set, ITranslator translator)
+        internal static SetDTO TranslateToDTO(this Set set, ICastHelper translator)
         {
-            SetDTO setDTO = new SetDTO(set.ID, set.Name, translator.GetSeasonName(set.SeasonID), set.ComplectionID)
+            SetDTO setDTO = new SetDTO(set.ID, set.Name, translator.GetSeasonName(set.SeasonID), set.PhysiqueID)
             {
                 Description = set.Description,
                 ClothIDs = translator.GetSetClothesIDs(set)

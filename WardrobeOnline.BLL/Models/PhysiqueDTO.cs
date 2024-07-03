@@ -9,7 +9,7 @@ using WardrobeOnline.DAL.Entities;
 
 namespace WardrobeOnline.BLL.Models
 {
-    public record ComplectionDTO(int iD, int growth, int weight, int personID) : IEntityDTO
+    public record PhysiqueDTO(int iD, int growth, int weight, int personID) : IEntityDTO
     {
         public int ID { get; init; } = iD;
         public string? Description { get; init; }
@@ -19,18 +19,23 @@ namespace WardrobeOnline.BLL.Models
         public int PersonID { get; init; } = personID;
         public IReadOnlyList<int>? SetIDs { get; init; }
 
-        internal Complection TranslateToDB(ITranslator translator)
+        public static explicit operator Physique(PhysiqueDTO self)
         {
-            Complection complection = new Complection()
+            Physique physique = new Physique()
             {
-                ID = ID,
-                Description = Description,
-                Growth = Growth,
-                Weight = Weight,
-                Force = Force,
-                PersonID = PersonID
+                ID = self.ID,
+                Description = self.Description,
+                Growth = self.Growth,
+                Weight = self.Weight,
+                Force = self.Force,
+                PersonID = self.PersonID
             };
-            return complection;
+            return physique;
         }
+
+        //internal Complection TranslateToDB(ITranslator translator)
+        //{
+            
+        //}
     }
 }

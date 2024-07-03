@@ -9,7 +9,7 @@ using WardrobeOnline.DAL.Interfaces;
 
 namespace WardrobeOnline.DAL.Entities
 {
-    public partial class Complection : IEntity
+    public partial class Physique : IEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }

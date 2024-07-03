@@ -11,12 +11,14 @@ namespace WardrobeOnline.DAL.Entities
         [Required]
         public string Name { get; set; }
         public string? Description { get; set; }
-        [Required, ForeignKey("ComplectionForeignKey")]
-        public int ComplectionID { get;set; }
-        [Required, ForeignKey("ComplectionForeignKey")]
+        [Required]
+        public int PhysiqueID { get;set; }
+        [Required]
         public int SeasonID { get; set; }
         public virtual ICollection<SetHasClothes> SetHasClothes { get; set; } = new List<SetHasClothes>();
-        public virtual Complection? Complection { get; set; }
+        [ForeignKey("PhysiqueID")]
+        public virtual Physique? Physique { get; set; }
+        [ForeignKey("SeasonID")]
         public virtual Season? Season { get; set; }
     }
 }

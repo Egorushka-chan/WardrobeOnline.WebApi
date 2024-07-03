@@ -16,7 +16,7 @@ namespace WardrobeOnline.DAL
             services.ConfigureEntity<Person>();
             services.ConfigureEntity<Cloth>();
             services.ConfigureEntity<ClothHasMaterials>();
-            services.ConfigureEntity<Complection>();
+            services.ConfigureEntity<Physique>();
             services.ConfigureEntity<Material>();
             services.ConfigureEntity<Photo>();
             services.ConfigureEntity<Season>();

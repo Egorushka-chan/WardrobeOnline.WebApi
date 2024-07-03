@@ -19,17 +19,30 @@ namespace WardrobeOnline.BLL.Models
         public IReadOnlyList<string>? Materials { get; init; }
         public IReadOnlyList<string>? PhotoPaths { get; init; }
 
-        internal Cloth TranslateToDB(ITranslator translator)
+        public static explicit operator Cloth(ClothDTO self)
         {
             Cloth cloth = new Cloth()
             {
-                ID = iD,
-                Name = Name,
-                Description = Description,
-                Rating = Rating,
-                Size = Size,
+                ID = self.ID,
+                Name = self.Name,
+                Description = self.Description,
+                Rating = self.Rating,
+                Size = self.Size,
             };
             return cloth;
         }
+
+        //internal Cloth TranslateToDB(ITranslator translator)
+        //{
+        //Cloth cloth = new Cloth()
+        //{
+        //    ID = self.iD,
+        //    Name = self.Name,
+        //    Description = self.Description,
+        //    Rating = self.Rating,
+        //    Size = self.Size,
+        //};
+        // return cloth;
+        //}
     }
 }

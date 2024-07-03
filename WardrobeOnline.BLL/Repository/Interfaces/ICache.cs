@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace WardrobeOnline.BLL.Repository.Interfaces
 {
+    /// <summary>
+    /// Сюда подключается Redis или MemCached
+    /// </summary>
     public interface ICache
     {
 
