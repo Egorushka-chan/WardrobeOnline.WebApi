@@ -5,14 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using WardrobeOnline.BLL.Repository.Interfaces;
 using WardrobeOnline.DAL.Entities;
+using WardrobeOnline.DAL.Repositories.Interfaces;
 
 namespace WardrobeOnline.BLL.Repository.Implementations
 {
-    public class Translator : ITranslator
+    public class Translator(IRepository<Season> seasonRepos, IRepository<Cloth> clothRepos) : ITranslator
     {
-        public int FindSeasonID(string seasonName)
+        private IRepository<Season> _seasonRepos = seasonRepos;
+        private IRepository<Cloth> _clothRepos = clothRepos;
+
+        public bool TryFindSeasonID(string seasonName, out int id)
         {
-            throw new NotImplementedException();
+            var result = _seasonRepos.GetAll().FirstOrDefault(ent => ent.Name == seasonName);
+            if(result is null)
+            {
+                id = 0;
+                return false;
+            }
+
+            id = result.ID;
+            return true;
         }
 
         public List<string> GetClothMaterialPaths(Cloth cloth)

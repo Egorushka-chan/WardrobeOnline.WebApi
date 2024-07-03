@@ -20,15 +20,32 @@ namespace WardrobeOnline.BLL.Models
 
         internal Set TranslateToDB(ITranslator translator)
         {
-            Set set = new()
+            int id;
+            if (translator.TryFindSeasonID(Season, out id))
             {
-                ID = ID,
-                Name = Name,
-                Description = Description,
-                SeasonID = translator.FindSeasonID(Season),
-                ComplectionID = ComplectionID
-            };
-            return set;
+                Set set = new()
+                {
+                    ID = ID,
+                    Name = Name,
+                    Description = Description,
+                    SeasonID = id,
+                    ComplectionID = ComplectionID
+                };
+                return set;
+            }
+            else
+            {
+                Set set = new()
+                {
+                    ID = ID,
+                    Name = Name,
+                    Description = Description,
+                    Season = new Season() { Name = Season},
+                    ComplectionID = ComplectionID
+                };
+                return set;
+            }
+            
         }
     }
 }

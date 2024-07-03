@@ -7,7 +7,7 @@ namespace WardrobeOnline.BLL.Repository.Interfaces
     {
         List<string> GetPhotoPaths(ICollection<Photo> photos);
         List<string> GetClothMaterialPaths(Cloth cloth);
-        int FindSeasonID(string seasonName);
+        bool TryFindSeasonID(string seasonName, out int id);
         IReadOnlyList<int> GetPersonComplectionsIDs(Person person);
         IReadOnlyList<int> GetComplectionSets(Complection complection);
         IReadOnlyList<int> GetSetClothesIDs(Set set);
