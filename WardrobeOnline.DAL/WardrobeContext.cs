@@ -13,6 +13,11 @@ namespace WardrobeOnline.DAL
             modelBuilder.Entity<Photo>()
                 .Property(e => e.IsDBStored)
                 .HasDefaultValue(false);
+
+            modelBuilder.Entity<Season>()
+                .HasMany(season => season.Sets)
+                .WithOne(set => set.Season)
+                .OnDelete(DeleteBehavior.SetNull);
         }
 
         public DbSet<T> DBSet<T>() where T : class, IEntity
