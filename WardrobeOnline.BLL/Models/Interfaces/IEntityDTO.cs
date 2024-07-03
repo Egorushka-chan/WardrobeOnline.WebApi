@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WardrobeOnline.BLL.Repository.Interfaces
+namespace WardrobeOnline.BLL.Models.Interfaces
 {
-    public interface IImageProvider
+    public interface IEntityDTO
     {
-        public string GetImageLink(int imageID);
+        int ID { get; init; }
     }
 }

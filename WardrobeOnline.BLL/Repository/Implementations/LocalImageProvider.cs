@@ -10,7 +10,7 @@ namespace WardrobeOnline.BLL.Repository.Implementations
 {
     public class LocalImageProvider : IImageProvider
     {
-        public string GetImageLink(string imageID)
+        public string GetImageLink(int imageID)
         {
             throw new NotImplementedException();
         }

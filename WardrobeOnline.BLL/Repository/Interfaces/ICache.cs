@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WardrobeOnline.BLL.Repository.Interfaces
 {
-    public interface IImageProvider
+    public interface ICache
     {
-        public string GetImageLink(int imageID);
+
     }
 }

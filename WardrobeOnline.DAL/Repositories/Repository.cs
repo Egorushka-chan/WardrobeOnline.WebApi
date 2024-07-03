@@ -3,7 +3,7 @@ using WardrobeOnline.DAL.Repositories.Interfaces;
 
 namespace WardrobeOnline.DAL.Repositories
 {
-    internal class Repository<T>(IWardrobeContext wardrobeContext) : IRepository<T> where T : class, IEntity
+    public class Repository<T>(IWardrobeContext wardrobeContext) : IRepository<T> where T : class, IEntity
     {
         private readonly IWardrobeContext _wardrobeContext = wardrobeContext ?? throw new ArgumentNullException(nameof(wardrobeContext));
 
