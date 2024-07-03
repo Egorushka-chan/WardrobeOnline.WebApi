@@ -34,13 +34,17 @@ namespace WardrobeOnline.BLL.Repository.Implementations
         public List<string> GetClothMaterialNames(Cloth cloth)
         {
             int[] materialIDs = _clothHasMaterials.Filter().Where(el => el.ClothID == cloth.ID).Select(el => el.MaterialID).ToArray();
-            foreach(int materialID in materialIDs)
-            {
+            throw new NotImplementedException();
 
+            foreach (int materialID in materialIDs)
+            {
+                // https://metanit.com/sharp/efcore/3.3.php - про навигационные свойства и связанные данные
+                
             }
         }
 
         // TODO: доделать каст хелпер. Это первоочередная задача перед продолжением работы над другими объектами
+        
 
         public IReadOnlyList<int> GetPhysiqueSets(Physique physique)
         {
