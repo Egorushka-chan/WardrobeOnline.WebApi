@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using WardrobeOnline.BLL.Models;
-using WardrobeOnline.BLL.Models.Interfaces;
-using WardrobeOnline.BLL.Repository.Implementations;
-using WardrobeOnline.BLL.Repository.Interfaces;
+using WardrobeOnline.BLL.Services.Implementations;
+using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
 
 namespace WardrobeOnline.BLL

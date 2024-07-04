@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WardrobeOnline.BLL.Models.Interfaces;
-using WardrobeOnline.BLL.Repository.Interfaces;
+﻿using WardrobeOnline.BLL.Models.Interfaces;
 using WardrobeOnline.DAL.Entities;
 
 namespace WardrobeOnline.BLL.Models
 {
-    public record ClothDTO(int iD, string name) : IEntityDTO
+    public record ClothDTO: IEntityDTO
     {
-        public int ID { get; init; } = iD;
-        public string Name { get; init; } = name;
+        // Пришлось сделать такой конструктор, потому конструктор в обьявлении записи сразу и поля создаёт
+        public ClothDTO(int iD, string name)
+        {
+            ID = iD;
+            Name = name;
+        }
+        public int ID { get; init; }
+        public string Name { get; init; }
         public string? Description { get; init; }
         public int Rating { get; init; }
         public string? Size { get; init; }

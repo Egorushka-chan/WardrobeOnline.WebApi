@@ -1,7 +1,6 @@
 ﻿using WardrobeOnline.DAL.Entities;
-using WardrobeOnline.DAL.Repositories.Interfaces;
 
-namespace WardrobeOnline.BLL.Repository.Interfaces
+namespace WardrobeOnline.BLL.Services.Interfaces
 {
     public interface ICastHelper
     {

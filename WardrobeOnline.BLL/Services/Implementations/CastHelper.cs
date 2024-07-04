@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using WardrobeOnline.BLL.Repository.Interfaces;
+using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Repositories.Interfaces;
-using System.Linq;
 
-namespace WardrobeOnline.BLL.Repository.Implementations
+namespace WardrobeOnline.BLL.Services.Implementations
 {
 
 
@@ -17,6 +16,11 @@ namespace WardrobeOnline.BLL.Repository.Implementations
         IRepository<Physique> physiqueRepository,
         IImageProvider imageProvider) : ICastHelper
     {
+        // TODO: ВОПРОС: performance issue
+        // Т.к. много запросов на получение, на изменение, добавление должны делать минимум 2 запроса
+        // Что влияет на производительносьб
+        // А точно тогда паттерн CRUD операции в IRepository нужны
+
         private IRepository<Season> _seasonRepos = seasonRepos;
         private IRepository<Cloth> _clothRepos = clothRepos;
         private IRepository<ClothHasMaterials> _clothHasMaterials = clothHasMaterials;

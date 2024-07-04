@@ -1,9 +1,8 @@
-﻿using System.Runtime.CompilerServices;
-using WardrobeOnline.BLL.Models;
-using WardrobeOnline.BLL.Repository.Interfaces;
+﻿using WardrobeOnline.BLL.Models;
+using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
 
-namespace WardrobeOnline.BLL.Repository.Extensions
+namespace WardrobeOnline.BLL.Services.Extensions
 {
     internal static class EntityExtensions
     {

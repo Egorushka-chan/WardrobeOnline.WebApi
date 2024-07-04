@@ -1,21 +1,20 @@
 ﻿using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Models.Interfaces;
-using WardrobeOnline.BLL.Repository.Extensions;
-using WardrobeOnline.BLL.Repository.Interfaces;
+using WardrobeOnline.BLL.Services.Extensions;
+using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Repositories.Interfaces;
 
-namespace WardrobeOnline.BLL.Repository.Implementations
+namespace WardrobeOnline.BLL.Services.Implementations
 {
     public class ClothProvider(
         IRepository<Cloth> repository,
         ICastHelper castHelper) : ICRUDProvider<ClothDTO>
     {
-        // TODO: соединить провайдер одежды с базой
         private IRepository<Cloth> _repository = repository;
         private ICastHelper _castHelper = castHelper;
 
-        public bool TryAdd(ClothDTO entity)
+        public Task<bool> TryAdd(ClothDTO entity)
         {
             return _repository.TryAdd((Cloth)entity);
         }
@@ -35,17 +34,12 @@ namespace WardrobeOnline.BLL.Repository.Implementations
                    select item.TranslateToDTO(_castHelper)).ToArray();
         }
 
-        public bool TryRemove(int id)
+        public Task<bool> TryRemove(int id)
         {
             return _repository.TryRemove(id);
         }
 
-        public bool TryRemove(ClothDTO entity)
-        {
-            return _repository.TryRemove((Cloth)entity);
-        }
-
-        public bool TryUpdate(ClothDTO entity)
+        public Task<bool> TryUpdate(ClothDTO entity)
         {
             return _repository.TryUpdate((Cloth)entity);
         }

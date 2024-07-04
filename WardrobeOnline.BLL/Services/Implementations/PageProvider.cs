@@ -1,9 +1,7 @@
-﻿using WardrobeOnline.BLL.Models.Interfaces;
-using WardrobeOnline.BLL.Repository.Interfaces;
-using WardrobeOnline.DAL.Entities;
+﻿using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Interfaces;
 
-namespace WardrobeOnline.BLL.Repository.Implementations
+namespace WardrobeOnline.BLL.Services.Implementations
 {
     public class PageProvider<TEntity> : IPageServiceProvider<TEntity>
         where TEntity : class, IEntity

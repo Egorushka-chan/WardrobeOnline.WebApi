@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using WardrobeOnline.DAL.Interfaces;
 using WardrobeOnline.DAL.Repositories.Interfaces;
 
@@ -6,7 +7,10 @@ namespace WardrobeOnline.DAL.Repositories
 {
     public class Repository<T>(IWardrobeContext wardrobeContext) : IRepository<T> where T : class, IEntity
     {
-        //TODO: Update, Add, Delete перевести на bool. Заменить везде сейвы на асинхронные
+        //TODO: ВОПРОС: тотальные непонятки с асинхронностью
+        //Яркий пример - TryGet. Там можно создать метод FindAsync
+        //Можно делать от LINQ ToArrayAsync.
+        //Но тогда очень много кода будет на Task
 
         private readonly IWardrobeContext _wardrobeContext = wardrobeContext ?? throw new ArgumentNullException(nameof(wardrobeContext));
 
@@ -23,29 +27,26 @@ namespace WardrobeOnline.DAL.Repositories
             return _wardrobeContext.DBSet<T>();
         }
 
-        public async bool TryAdd(T entity)
+        public async Task<bool> TryAdd(T entity)
         {
             _wardrobeContext.DBSet<T>().Add(entity);
-            await _wardrobeContext.SaveChangesAsync();
+            var changes = await _wardrobeContext.SaveChangesAsync();
+            return changes == 1;
         }
 
-        public async bool TryUpdate(T entity)
+        public async Task<bool> TryUpdate(T entity)
         {
             _wardrobeContext.DBSet<T>().Update(entity);
-            await _wardrobeContext.SaveChangesAsync();
+            var changes = await _wardrobeContext.SaveChangesAsync();
+            return changes == 1;
         }
 
-        public async bool TryRemove(int id)
+        public async Task<bool> TryRemove(int id)
         {
             T entity = _wardrobeContext.DBSet<T>().Where(el => el.ID == id).First();
             _wardrobeContext.DBSet<T>().Remove(entity);
-            await _wardrobeContext.SaveChangesAsync();
-        }
-
-        public async bool TryRemove(T entity)
-        {
-            _wardrobeContext.DBSet<T>().Remove(entity);
-            await _wardrobeContext.SaveChangesAsync();
+            var changes = await _wardrobeContext.SaveChangesAsync();
+            return changes == 1;
         }
     }
 }

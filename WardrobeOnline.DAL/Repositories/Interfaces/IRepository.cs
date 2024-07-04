@@ -8,9 +8,8 @@ namespace WardrobeOnline.DAL.Repositories.Interfaces
         public IReadOnlyCollection<T> GetAll();
         public T? TryGet(int id);
         public DbSet<T> Filter();
-        public bool TryAdd(T entity);
-        public bool TryRemove(int id);
-        public bool TryRemove(T entity);
-        public bool TryUpdate(T entity);
+        public Task<bool> TryAdd(T entity);
+        public Task<bool> TryRemove(int id);
+        public Task<bool> TryUpdate(T entity);
     }
 }

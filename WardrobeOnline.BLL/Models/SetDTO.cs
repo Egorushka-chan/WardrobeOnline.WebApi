@@ -1,26 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WardrobeOnline.BLL.Models.Interfaces;
-using WardrobeOnline.BLL.Repository.Implementations;
-using WardrobeOnline.BLL.Repository.Interfaces;
+﻿using WardrobeOnline.BLL.Models.Interfaces;
 using WardrobeOnline.DAL.Entities;
 
 namespace WardrobeOnline.BLL.Models
 {
-    public record SetDTO(int iD, string name, string season, int physiqueID) : IEntityDTO
+    public record SetDTO : IEntityDTO
     {
-        public int ID { get; init; } = iD;
-        public string Name { get; init; } = name;
+        // Пришлось сделать такой конструктор, потому конструктор в обьявлении записи сразу и поля создаёт
+        public SetDTO(int iD, string name, string season, int physiqueID)
+        {
+            ID = iD;
+            Name = name;
+            Season = season;
+            PhysiqueID = physiqueID;
+        }
+
+        public int ID { get; init; }
+        public string Name { get; init; }
         public string? Description { get; init; }
-        public string Season { get; init; } = season;
-        public int PhysiqueID { get; init; } = physiqueID;
+        public string Season { get; init; }
+        public int PhysiqueID { get; init; }
         public IReadOnlyList<int>? ClothIDs { get; init; }
 
         /// <summary>
         /// Это преобразование требует после себя обязательного определения Session/SessionID
+        /// Требование использовать именно такой определитель
+        /// И CastHelper не может помочь тут
         /// </summary>
         public static explicit operator Set(SetDTO self)
         {

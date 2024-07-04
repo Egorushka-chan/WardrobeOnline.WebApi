@@ -1,12 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WardrobeOnline.BLL.Repository.Interfaces;
+﻿using WardrobeOnline.BLL.Services.Interfaces;
 
-namespace WardrobeOnline.BLL.Repository.Implementations
+namespace WardrobeOnline.BLL.Services.Implementations
 {
     public class GeneralInfoProvider(ICache cache) : IGeneralInfoProvider // не факт что понадобится
     {
