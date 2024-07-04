@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WardrobeOnline.DAL.Entities;
 
 namespace WardrobeOnline.DAL.Interfaces
 {
-    public interface IWardrobeContext // а как тогда с подключениями работать? Делать фасад над контекстами?
+    public interface IWardrobeContext
     {
-        public DbSet<Person> Persons { get; set; }
-        public DbSet<Complection> Complections { get; set; }
-        public DbSet<Set> Sets { get; set; }
-        public DbSet<Season> Seasons { get; set; }
-        public DbSet<SetHasClothes> SetHasClothes { get; set; }
-        public DbSet<Cloth> Clothes { get; set; }
-        public DbSet<Material> Materials { get; set; }
-        public DbSet<ClothHasMaterials> ClothHasMaterials { get; set; }
-        public DbSet<Photo> Photos { get; set; }
+        DbSet<Cloth> Clothes { get; set; }
+        DbSet<ClothHasMaterials> ClothHasMaterials { get; set; }
+        DbSet<Physique> Physiques { get; set; }
+        DbSet<Material> Materials { get; set; }
+        DbSet<Person> Persons { get; set; }
+        DbSet<Photo> Photos { get; set; }
+        DbSet<Season> Seasons { get; set; }
+        DbSet<SetHasClothes> SetHasClothes { get; set; }
+        DbSet<Set> Sets { get; set; }
+
+        WardrobeContext Context();
+        DbSet<T> DBSet<T>() where T : class, IEntity;
+        Task<int> SaveChangesAsync();
     }
 }

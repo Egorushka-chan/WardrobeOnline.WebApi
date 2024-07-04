@@ -1,6 +1,6 @@
-@WardrobeOnline.WebApi_HostAddress = http://localhost:5214
+@HostAddress = http://localhost:5214
 
-GET {{WardrobeOnline.WebApi_HostAddress}}/weatherforecast/
+GET {{HostAddress}}/Person/
 Accept: application/json
 
 ###
