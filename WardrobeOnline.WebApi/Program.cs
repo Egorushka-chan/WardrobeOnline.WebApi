@@ -33,6 +33,7 @@ if (app.Configuration["ImageSetting:Type"] == "local")
 }
 
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

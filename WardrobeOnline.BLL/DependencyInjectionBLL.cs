@@ -30,7 +30,7 @@ namespace WardrobeOnline.BLL
             }
 
             services.AddTransient<ICastHelper, CastHelper>();
-            services.AddTransient<IGeneralInfoProvider, GeneralInfoProvider>();
+            //services.AddTransient<IGeneralInfoProvider, GeneralInfoProvider>();
         }
     }
 }

@@ -29,7 +29,9 @@ namespace WardrobeOnline.DAL.Repositories
 
         public async Task<bool> TryAdd(T entity)
         {
-            _wardrobeContext.DBSet<T>().Add(entity);
+            var added = _wardrobeContext.DBSet<T>().Add(entity);
+            //int createdID = added.Entity.ID;
+
             var changes = await _wardrobeContext.SaveChangesAsync();
             return changes == 1;
         }
