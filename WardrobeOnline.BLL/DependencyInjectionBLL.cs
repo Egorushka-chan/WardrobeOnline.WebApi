@@ -11,10 +11,10 @@ namespace WardrobeOnline.BLL
     {
         public static void AddBusinessLayer(this IServiceCollection services, string imageServerType = "local", string imagePath="/")
         {
-            services.AddTransient<IEntityProvider<ClothDTO>, ClothProvider>();
-            services.AddTransient<IEntityProvider<PhysiqueDTO>, PhysiqueProvider>();
-            services.AddTransient<IEntityProvider<SetDTO>, SetProvider>();
-            services.AddTransient<IEntityProvider<PersonDTO>, PersonProvider>();
+            services.AddTransient<ICRUDProvider<ClothDTO>, ClothProvider>();
+            services.AddTransient<ICRUDProvider<PhysiqueDTO>, PhysiqueProvider>();
+            services.AddTransient<ICRUDProvider<SetDTO>, SetProvider>();
+            services.AddTransient<ICRUDProvider<PersonDTO>, PersonProvider>();
 
             services.AddTransient<IPageServiceProvider<Person>, PageProvider<Person>>();
             services.AddTransient<IPageServiceProvider<Set>, PageProvider<Set>>();

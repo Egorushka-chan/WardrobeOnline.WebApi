@@ -1,17 +1,29 @@
-﻿using WardrobeOnline.BLL.Repository.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+
+using WardrobeOnline.BLL.Repository.Interfaces;
 using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Repositories.Interfaces;
+using System.Linq;
 
 namespace WardrobeOnline.BLL.Repository.Implementations
 {
+
+
     public class CastHelper(IRepository<Season> seasonRepos, 
         IRepository<Cloth> clothRepos,
-        IRepository<ClothHasMaterials> clothHasMaterials) : ICastHelper
+        IRepository<ClothHasMaterials> clothHasMaterials,
+        IRepository<SetHasClothes> setClothRepository,
+        IRepository<Set> setRepository,
+        IRepository<Physique> physiqueRepository,
+        IImageProvider imageProvider) : ICastHelper
     {
         private IRepository<Season> _seasonRepos = seasonRepos;
         private IRepository<Cloth> _clothRepos = clothRepos;
         private IRepository<ClothHasMaterials> _clothHasMaterials = clothHasMaterials;
-
+        private IRepository<Set> _setRepository = setRepository;
+        private IRepository<Physique> _physiqueRepository = physiqueRepository;
+        private IImageProvider _imageProvider = imageProvider;
+        private IRepository<SetHasClothes> _setClothRepository= setClothRepository;
         /// <summary>
         /// Возвращает булево значение в зависимости от существования такого сезона
         /// </summary>
@@ -31,44 +43,45 @@ namespace WardrobeOnline.BLL.Repository.Implementations
             return true;
         }
 
-        public List<string> GetClothMaterialNames(Cloth cloth)
+        public IReadOnlyList<string> GetClothMaterialNames(Cloth cloth)
         {
-            int[] materialIDs = _clothHasMaterials.Filter().Where(el => el.ClothID == cloth.ID).Select(el => el.MaterialID).ToArray();
-            throw new NotImplementedException();
+            ClothHasMaterials[] clothMaterials = _clothHasMaterials.Filter().Where(el => el.ClothID == cloth.ID).Include(m => m.Material).ToArray();
+            var materialIDs = clothMaterials.Select(el => el.MaterialID);
 
-            foreach (int materialID in materialIDs)
-            {
-                // https://metanit.com/sharp/efcore/3.3.php - про навигационные свойства и связанные данные
-                
-            }
+            return (from int materialID in materialIDs
+                    select clothMaterials[materialID].Material.Name).ToList();
         }
-
-        // TODO: доделать каст хелпер. Это первоочередная задача перед продолжением работы над другими объектами
         
-
-        public IReadOnlyList<int> GetPhysiqueSets(Physique physique)
+        public IReadOnlyList<int> GetPhysiqueSetIDs(Physique physique)
         {
-            throw new NotImplementedException();
+            return _setRepository.Filter().Where(s => s.PhysiqueID == physique.ID).Select(s => s.ID).ToList();
         }
 
         public IReadOnlyList<int> GetPersonPhysiqueIDs(Person person)
         {
-            throw new NotImplementedException();
+            return  _physiqueRepository.Filter().Where(p => p.PersonID == person.ID).Select(p=> p.ID).ToList();
         }
 
-        public List<string> GetPhotoPaths(ICollection<Photo> photos)
+        public IReadOnlyList<string> GetPhotoPaths(ICollection<Photo> photos)
         {
-            throw new NotImplementedException();
+            return (from Photo photo in photos
+                    select _imageProvider.GetImageLink(photo.ID)).ToList();
         }
 
         public string GetSeasonName(int seasonID)
         {
-            throw new NotImplementedException();
+            string result = "";
+            var query = _seasonRepos.TryGet(seasonID);
+            if(query == null)
+                result = "Unknown";
+            else
+                result = query.ToString();
+            return result;
         }
 
         public IReadOnlyList<int> GetSetClothesIDs(Set set)
         {
-            throw new NotImplementedException();
+            return _setClothRepository.Filter().Where(sc => sc.SetID == set.ID).Select(sc => sc.ClothID).ToList();
         }
     }
 }

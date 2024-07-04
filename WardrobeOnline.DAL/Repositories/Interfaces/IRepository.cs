@@ -6,11 +6,11 @@ namespace WardrobeOnline.DAL.Repositories.Interfaces
     public interface IRepository<T> where T : class, IEntity
     {
         public IReadOnlyCollection<T> GetAll();
-        public T Get(int id);
+        public T? TryGet(int id);
         public DbSet<T> Filter();
-        public void Add(T entity);
-        public void Remove(int id);
-        public void Remove(T entity);
-        public void Update(T entity);
+        public bool TryAdd(T entity);
+        public bool TryRemove(int id);
+        public bool TryRemove(T entity);
+        public bool TryUpdate(T entity);
     }
 }

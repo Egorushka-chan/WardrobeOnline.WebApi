@@ -8,15 +8,15 @@ using WardrobeOnline.BLL.Repository.Interfaces;
 
 namespace WardrobeOnline.BLL.Repository.Implementations
 {
-    public class PersonProvider : IEntityProvider<PersonDTO>
+    public class PersonProvider : ICRUDProvider<PersonDTO>
     {
         // TODO: соединить провайдер персон с базой
-        public void Add(PersonDTO entity)
+        public void TryAdd(PersonDTO entity)
         {
             throw new NotImplementedException();
         }
 
-        public PersonDTO Get(int id)
+        public PersonDTO TryGet(int id)
         {
             throw new NotImplementedException();
         }
@@ -26,17 +26,17 @@ namespace WardrobeOnline.BLL.Repository.Implementations
             throw new NotImplementedException();
         }
 
-        public void Remove(int id)
+        public void TryRemove(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Remove(PersonDTO entity)
+        public void TryRemove(PersonDTO entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(PersonDTO entity)
+        public void TryUpdate(PersonDTO entity)
         {
             throw new NotImplementedException();
         }

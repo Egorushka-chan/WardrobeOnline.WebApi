@@ -9,16 +9,16 @@ namespace WardrobeOnline.BLL.Repository.Extensions
     {
         internal static ClothDTO TranslateToDTO(this Cloth cloth, ICastHelper translator)
         {
-            List<string> photoPath = translator.GetPhotoPaths(cloth.Photos);
+            var photoPaths = translator.GetPhotoPaths(cloth.Photos);
 
-            List<string> materials = translator.GetClothMaterialNames(cloth);
+            var materials = translator.GetClothMaterialNames(cloth);
 
             ClothDTO clothDTO = new(cloth.ID, cloth.Name)
             {
                 Description = cloth.Description,
                 Rating = cloth.Rating,
                 Size = cloth.Size,
-                PhotoPaths = photoPath,
+                PhotoPaths = photoPaths,
                 Materials = materials
             };
             return clothDTO;
@@ -40,7 +40,7 @@ namespace WardrobeOnline.BLL.Repository.Extensions
             {
                 Description = physique.Description,
                 Force = physique.Force,
-                SetIDs = translator.GetPhysiqueSets(physique)
+                SetIDs = translator.GetPhysiqueSetIDs(physique)
             };
             return physiqueDTO;
         }

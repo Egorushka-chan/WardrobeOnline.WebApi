@@ -1,43 +1,53 @@
 ﻿using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Models.Interfaces;
+using WardrobeOnline.BLL.Repository.Extensions;
 using WardrobeOnline.BLL.Repository.Interfaces;
 using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Repositories.Interfaces;
 
 namespace WardrobeOnline.BLL.Repository.Implementations
 {
-    public class ClothProvider(IRepository<Cloth> repository) : IEntityProvider<ClothDTO>
+    public class ClothProvider(
+        IRepository<Cloth> repository,
+        ICastHelper castHelper) : ICRUDProvider<ClothDTO>
     {
         // TODO: соединить провайдер одежды с базой
         private IRepository<Cloth> _repository = repository;
-        public void Add(ClothDTO entity)
+        private ICastHelper _castHelper = castHelper;
+
+        public bool TryAdd(ClothDTO entity)
         {
-            throw new NotImplementedException();
+            return _repository.TryAdd((Cloth)entity);
         }
 
-        public ClothDTO Get(int id)
+        public ClothDTO? TryGet(int id)
         {
-            throw new NotImplementedException();
+            var get = _repository.TryGet(id);
+            if (get == null)
+                return null;
+
+            return get.TranslateToDTO(_castHelper);
         }
 
         public IReadOnlyCollection<ClothDTO> GetAll()
         {
-            throw new NotImplementedException();
+            return (from item in _repository.GetAll()
+                   select item.TranslateToDTO(_castHelper)).ToArray();
         }
 
-        public void Remove(int id)
+        public bool TryRemove(int id)
         {
-            throw new NotImplementedException();
+            return _repository.TryRemove(id);
         }
 
-        public void Remove(ClothDTO entity)
+        public bool TryRemove(ClothDTO entity)
         {
-            throw new NotImplementedException();
+            return _repository.TryRemove((Cloth)entity);
         }
 
-        public void Update(ClothDTO entity)
+        public bool TryUpdate(ClothDTO entity)
         {
-            throw new NotImplementedException();
+            return _repository.TryUpdate((Cloth)entity);
         }
     }
 }

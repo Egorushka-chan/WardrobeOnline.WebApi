@@ -14,39 +14,35 @@ namespace WardrobeOnline.DAL.Repositories
         {
             return _wardrobeContext.DBSet<T>().ToList().AsReadOnly();
         }
-        public T Get(int id)
-        {
-            _wardrobeContext.DBSet<T>();
-
-            IQueryable queryable = _wardrobeContext.DBSet<T>();
-
-            return _wardrobeContext.DBSet<T>().Where(el => el.ID == id).First();
+        public T? TryGet(int id)
+        {           
+            return _wardrobeContext.DBSet<T>().Find(id);
         }
         public DbSet<T> Filter()
         {
-            throw new NotImplementedException();
+            return _wardrobeContext.DBSet<T>();
         }
 
-        public async void Add(T entity)
+        public async bool TryAdd(T entity)
         {
             _wardrobeContext.DBSet<T>().Add(entity);
             await _wardrobeContext.SaveChangesAsync();
         }
 
-        public async void Update(T entity)
+        public async bool TryUpdate(T entity)
         {
             _wardrobeContext.DBSet<T>().Update(entity);
             await _wardrobeContext.SaveChangesAsync();
         }
 
-        public async void Remove(int id)
+        public async bool TryRemove(int id)
         {
             T entity = _wardrobeContext.DBSet<T>().Where(el => el.ID == id).First();
             _wardrobeContext.DBSet<T>().Remove(entity);
             await _wardrobeContext.SaveChangesAsync();
         }
 
-        public async void Remove(T entity)
+        public async bool TryRemove(T entity)
         {
             _wardrobeContext.DBSet<T>().Remove(entity);
             await _wardrobeContext.SaveChangesAsync();

@@ -8,15 +8,15 @@ using WardrobeOnline.BLL.Repository.Interfaces;
 
 namespace WardrobeOnline.BLL.Repository.Implementations
 {
-    public class PhysiqueProvider : IEntityProvider<PhysiqueDTO>
+    public class PhysiqueProvider : ICRUDProvider<PhysiqueDTO>
     {
         // TODO: соединить провайдер комплекции с базой
-        public void Add(PhysiqueDTO entity)
+        public void TryAdd(PhysiqueDTO entity)
         {
             throw new NotImplementedException();
         }
 
-        public PhysiqueDTO Get(int id)
+        public PhysiqueDTO TryGet(int id)
         {
             throw new NotImplementedException();
         }
@@ -26,17 +26,17 @@ namespace WardrobeOnline.BLL.Repository.Implementations
             throw new NotImplementedException();
         }
 
-        public void Remove(int id)
+        public void TryRemove(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Remove(PhysiqueDTO entity)
+        public void TryRemove(PhysiqueDTO entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(PhysiqueDTO entity)
+        public void TryUpdate(PhysiqueDTO entity)
         {
             throw new NotImplementedException();
         }

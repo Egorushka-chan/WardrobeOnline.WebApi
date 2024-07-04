@@ -22,5 +22,6 @@ namespace WardrobeOnline.DAL.Entities
         [Required, ForeignKey("PersonForeignKey")]
         public int PersonID { get; set; }
         public virtual Person? Person { get; set; }
+        public virtual ICollection<Set> Sets { get; set; } = new List<Set>();
     }
 }
