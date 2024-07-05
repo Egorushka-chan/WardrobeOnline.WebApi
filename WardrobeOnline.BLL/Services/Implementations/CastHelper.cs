@@ -7,7 +7,6 @@ using WardrobeOnline.DAL.Repositories.Interfaces;
 namespace WardrobeOnline.BLL.Services.Implementations
 {
 
-
     public class CastHelper(IRepository<Season> seasonRepos, 
         IRepository<Cloth> clothRepos,
         IRepository<ClothHasMaterials> clothHasMaterials,
@@ -16,10 +15,6 @@ namespace WardrobeOnline.BLL.Services.Implementations
         IRepository<Physique> physiqueRepository,
         IImageProvider imageProvider) : ICastHelper
     {
-        // TODO: ВОПРОС: performance issue
-        // Т.к. много запросов на получение, на изменение, добавление должны делать минимум 2 запроса
-        // Что влияет на производительносьб
-        // А точно тогда паттерн CRUD операции в IRepository нужны
 
         private IRepository<Season> _seasonRepos = seasonRepos;
         private IRepository<Cloth> _clothRepos = clothRepos;

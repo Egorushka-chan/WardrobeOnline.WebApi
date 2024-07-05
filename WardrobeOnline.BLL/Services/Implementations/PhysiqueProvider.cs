@@ -24,7 +24,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
             return _repository.TryAdd((Physique)entity);
         }
 
-        public PhysiqueDTO? TryGet(int id)
+        public PhysiqueDTO? TryGetAsync(int id)
         {
             var get = _repository.TryGet(id);
             if (get == null)

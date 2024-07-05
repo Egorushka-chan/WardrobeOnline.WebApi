@@ -15,10 +15,10 @@ namespace WardrobeOnline.BLL
             services.AddTransient<ICRUDProvider<SetDTO>, SetProvider>();
             services.AddTransient<ICRUDProvider<PersonDTO>, PersonProvider>();
 
-            services.AddTransient<IPageServiceProvider<Person>, PageProvider<Person>>();
-            services.AddTransient<IPageServiceProvider<Set>, PageProvider<Set>>();
-            services.AddTransient<IPageServiceProvider<Physique>, PageProvider<Physique>>();
-            services.AddTransient<IPageServiceProvider<Cloth>, PageProvider<Cloth>>();
+            services.AddTransient<IPaginationService<Person>, PageService<Person>>();
+            services.AddTransient<IPaginationService<Set>, PageService<Set>>();
+            services.AddTransient<IPaginationService<Physique>, PageService<Physique>>();
+            services.AddTransient<IPaginationService<Cloth>, PageService<Cloth>>();
 
             if(imageServerType == "web")
             {

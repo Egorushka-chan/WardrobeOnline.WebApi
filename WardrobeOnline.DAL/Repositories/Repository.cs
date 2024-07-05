@@ -5,13 +5,13 @@ using WardrobeOnline.DAL.Repositories.Interfaces;
 
 namespace WardrobeOnline.DAL.Repositories
 {
+    /// <summary>
+    /// Это классный паттерн, если у тебя с базой происходят только какие то элементарные процессы.
+    /// Однако мне в этом проекте понадобилось усложнить получение и применение данных, из-за чего он стал меня сильно ограничивать
+    /// </summary>
+    [Obsolete]
     public class Repository<T>(IWardrobeContext wardrobeContext) : IRepository<T> where T : class, IEntity
     {
-        //TODO: ВОПРОС: тотальные непонятки с асинхронностью
-        //Яркий пример - TryGet. Там можно создать метод FindAsync
-        //Можно делать от LINQ ToArrayAsync.
-        //Но тогда очень много кода будет на Task
-
         private readonly IWardrobeContext _wardrobeContext = wardrobeContext ?? throw new ArgumentNullException(nameof(wardrobeContext));
 
         public IReadOnlyCollection<T> GetAll()

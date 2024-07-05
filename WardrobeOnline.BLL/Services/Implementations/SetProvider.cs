@@ -34,13 +34,16 @@ namespace WardrobeOnline.BLL.Services.Implementations
             return _repository.TryAdd(set);
         }
 
-        public SetDTO? TryGet(int id)
+        public SetDTO? TryGetAsync(int id)
         {
             var get = _repository.TryGet(id);
             if (get == null)
                 return null;
 
-            return get.TranslateToDTO(_castHelper);
+            return new SetDTO(get.ID, get.Name, get.Season?.Name ?? string.Empty, get.PhysiqueID)
+            {
+
+            };
         }
 
         public Task<bool> TryRemove(int id)

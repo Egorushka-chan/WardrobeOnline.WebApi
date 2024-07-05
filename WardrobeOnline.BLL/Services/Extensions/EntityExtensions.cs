@@ -1,57 +1,276 @@
-﻿using WardrobeOnline.BLL.Models;
+﻿using System.Data;
+using System.Threading.Channels;
+using WardrobeOnline.BLL.Models;
+using WardrobeOnline.BLL.Models.Interfaces;
 using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
+using WardrobeOnline.DAL.Interfaces;
 
 namespace WardrobeOnline.BLL.Services.Extensions
 {
     internal static class EntityExtensions
     {
-        internal static ClothDTO TranslateToDTO(this Cloth cloth, ICastHelper translator)
+        /// <summary>
+        /// Метод расширения, переводящий объекты <see cref="IEntity"></see> в объекты <see cref="IEntityDTO"/>
+        /// </summary>
+        /// <remarks>Делает это не оптимально, т.к для приведения могут запрашиваться дополнительные запросы к базе данных</remarks>
+        /// <typeparam name="Tdb">Один из типов, принадлежащих <see cref="IEntity"></see></typeparam>
+        /// <typeparam name="Tdto">Один из типов, принадлежащих <see cref="IEntityDTO"></see></typeparam>
+        /// <param name="entityDB"></param>
+        /// <param name="resultDTO">Выведет null, если нет имплементации для выбранных объектов</param>
+        /// <param name="translator"></param>
+        internal static void TranslateToDTO<Tdb, Tdto>(this Tdb entityDB, out Tdto? resultDTO, ICastHelper translator) 
+            where Tdb : class, IEntity
+            where Tdto : class, IEntityDTO
         {
-            var photoPaths = translator.GetPhotoPaths(cloth.Photos);
+            //return entityDB switch
+            //{
+            //    Cloth cloth => Mapping(cloth),
+            //    Set set => Mapping(set),
+            //    _ => null,
+            //};
 
-            var materials = translator.GetClothMaterialNames(cloth);
+            //return Mapping(entityDB);
+            resultDTO = Mapping(entityDB);
 
-            ClothDTO clothDTO = new(cloth.ID, cloth.Name)
+            Tdto? Mapping(Tdb entity)
             {
-                Description = cloth.Description,
-                Rating = cloth.Rating,
-                Size = cloth.Size,
-                PhotoPaths = photoPaths,
-                Materials = materials
-            };
-            return clothDTO;
+                if(entity is Cloth cloth)
+                {
+                    var photoPaths = translator.GetPhotoPaths(cloth.Photos);
+                    var materials = translator.GetClothMaterialNames(cloth);
+
+                    return new ClothDTO(cloth.ID, cloth.Name)
+                    {
+                        Description = cloth.Description,
+                        Rating = cloth.Rating,
+                        Size = cloth.Size,
+                        PhotoPaths = photoPaths,
+                        Materials = materials
+                    } as Tdto;
+                }
+                if(entity is Set set)
+                {
+                    SetDTO setDTO = new SetDTO(set.ID, set.Name, translator.GetSeasonName(set.SeasonID), set.PhysiqueID)
+                    {
+                        Description = set.Description,
+                        ClothIDs = translator.GetSetClothesIDs(set)
+                    };
+                    return setDTO as Tdto;
+                }
+                if(entity is Person person)
+                {
+                    PersonDTO personDTO = new PersonDTO(person.ID, person.Name)
+                    {
+                        Type = person.Type,
+                        PhysiqueIDs = translator.GetPersonPhysiqueIDs(person)
+                    };
+                    return personDTO as Tdto;
+                }
+                if(entity is Physique physique)
+                {
+                    PhysiqueDTO physiqueDTO = new PhysiqueDTO(physique.ID, physique.Growth, physique.Weight, physique.PersonID)
+                    {
+                        Description = physique.Description,
+                        Force = physique.Force,
+                        SetIDs = translator.GetPhysiqueSetIDs(physique)
+                    };
+                    return physiqueDTO as Tdto;
+                }
+
+                return null;
+            }
         }
 
-        internal static PersonDTO TranslateToDTO(this Person person, ICastHelper translator) 
+        /// <summary>
+        /// Метод расширения, переводящий объекты <see cref="IEntityDTO"></see> в объекты <see cref="IEntity"/>
+        /// </summary>
+        /// <remarks>Делает это не оптимально, т.к для приведения могут запрашиваться дополнительные запросы к базе данных</remarks>
+        /// <typeparam name="Tdb">Один из типов, принадлежащих <see cref="IEntity"></see></typeparam>
+        /// <typeparam name="Tdto">Один из типов, принадлежащих <see cref="IEntityDTO"></see></typeparam>
+        /// <param name="entityDB"></param>
+        /// <param name="resultDTO">Выведет null, если нет имплементации для выбранных объектов</param>
+        /// <param name="translator"></param>
+        internal static void TranslateToDB<Tdto, Tdb>(this Tdto entityDTO, out Tdb? resultDB, ICastHelper castHelper)
+            where Tdb : class, IEntity
+            where Tdto : class, IEntityDTO
         {
-            PersonDTO personDTO = new PersonDTO(person.ID, person.Name)
+            resultDB = entityDTO switch
             {
-                Type = person.Type,
-                PhysiqueIDs = translator.GetPersonPhysiqueIDs(person)
+                ClothDTO clothDTO => GetCloth(clothDTO),
+                SetDTO setDTO => GetSet(setDTO),
+                PhysiqueDTO physiqueDTO => GetPhysique(physiqueDTO),
+                PersonDTO personDTO => GetPerson(personDTO),
+                _ => null
             };
-            return personDTO;
+
+            Tdb? GetCloth(ClothDTO self)
+            {
+                Cloth cloth = new()
+                {
+                    ID = self.ID,
+                    Name = self.Name,
+                    Description = self.Description,
+                    Rating = self.Rating,
+                    Size = self.Size,
+                };
+                return cloth as Tdb;
+            }
+
+            Tdb? GetSet(SetDTO self)
+            {
+                int id;
+                if (castHelper.TryFindSeasonID(self.Season, out id))
+                {
+                    Set set = new()
+                    {
+                        ID = self.ID,
+                        Name = self.Name,
+                        Description = self.Description,
+                        SeasonID = id,
+                        PhysiqueID = self.PhysiqueID
+                    };
+                    return set as Tdb;
+                }
+                else
+                {
+                    Set set = new()
+                    {
+                        ID = self.ID,
+                        Name = self.Name,
+                        Description = self.Description,
+                        Season = new Season() { Name = self.Season },
+                        PhysiqueID = self.PhysiqueID
+                    };
+                    return set as Tdb;
+                }
+            }
+
+            Tdb? GetPhysique(PhysiqueDTO self)
+            {
+                Physique physique = new Physique()
+                {
+                    ID = self.ID,
+                    Description = self.Description,
+                    Growth = self.Growth,
+                    Weight = self.Weight,
+                    Force = self.Force,
+                    PersonID = self.PersonID
+                };
+                return physique as Tdb;
+            }
+
+            Tdb? GetPerson(PersonDTO self)
+            {
+                Person person = new()
+                {
+                    ID = self.ID,
+                    Name = self.Name,
+                    Type = self.Type,
+                };
+                return person as Tdb;
+            }
         }
 
-        internal static PhysiqueDTO TranslateToDTO(this Physique physique, ICastHelper translator)
-        {
-            PhysiqueDTO physiqueDTO = new PhysiqueDTO(physique.ID, physique.Growth, physique.Weight, physique.PersonID)
-            {
-                Description = physique.Description,
-                Force = physique.Force,
-                SetIDs = translator.GetPhysiqueSetIDs(physique)
-            };
-            return physiqueDTO;
-        }
+        //internal static ClothDTO TranslateToDTO(this Cloth cloth, ICastHelper translator)
+        //{
+        //    var photoPaths = translator.GetPhotoPaths(cloth.Photos);
 
-        internal static SetDTO TranslateToDTO(this Set set, ICastHelper translator)
-        {
-            SetDTO setDTO = new SetDTO(set.ID, set.Name, translator.GetSeasonName(set.SeasonID), set.PhysiqueID)
-            {
-                Description = set.Description,
-                ClothIDs = translator.GetSetClothesIDs(set)
-            };
-            return setDTO;
-        }
+        //    var materials = translator.GetClothMaterialNames(cloth);
+
+        //    ClothDTO clothDTO = new(cloth.ID, cloth.Name)
+        //    {
+        //        Description = cloth.Description,
+        //        Rating = cloth.Rating,
+        //        Size = cloth.Size,
+        //        PhotoPaths = photoPaths,
+        //        Materials = materials
+        //    };
+        //    return clothDTO;
+        //}
+
+        //internal static PersonDTO TranslateToDTO(this Person person, ICastHelper translator) 
+        //{
+        //    PersonDTO personDTO = new PersonDTO(person.ID, person.Name)
+        //    {
+        //        Type = person.Type,
+        //        PhysiqueIDs = translator.GetPersonPhysiqueIDs(person)
+        //    };
+        //    return personDTO;
+        //}
+
+        //internal static PhysiqueDTO TranslateToDTO(this Physique physique, ICastHelper translator)
+        //{
+        //    PhysiqueDTO physiqueDTO = new PhysiqueDTO(physique.ID, physique.Growth, physique.Weight, physique.PersonID)
+        //    {
+        //        Description = physique.Description,
+        //        Force = physique.Force,
+        //        SetIDs = translator.GetPhysiqueSetIDs(physique)
+        //    };
+        //    return physiqueDTO;
+        //}
+
+        //internal static SetDTO TranslateToDTO(this Set set, ICastHelper translator)
+        //{
+        //    SetDTO setDTO = new SetDTO(set.ID, set.Name, translator.GetSeasonName(set.SeasonID), set.PhysiqueID)
+        //    {
+        //        Description = set.Description,
+        //        ClothIDs = translator.GetSetClothesIDs(set)
+        //    };
+        //    return setDTO;
+        //}
+
+        //internal static void TranslateToDTO(this IEntity entityDB, out IEntityDTO? resultDTO, ICastHelper translator)
+        //{
+        //    resultDTO = Mapping(entityDB);
+
+        //    IEntityDTO? Mapping(IEntity entity)
+        //    {
+        //        if (entity is Cloth cloth)
+        //        {
+        //            var photoPaths = translator.GetPhotoPaths(cloth.Photos);
+        //            var materials = translator.GetClothMaterialNames(cloth);
+
+        //            return new ClothDTO(cloth.ID, cloth.Name)
+        //            {
+        //                Description = cloth.Description,
+        //                Rating = cloth.Rating,
+        //                Size = cloth.Size,
+        //                PhotoPaths = photoPaths,
+        //                Materials = materials
+        //            };
+        //        }
+        //        if (entity is Set set)
+        //        {
+        //            SetDTO setDTO = new SetDTO(set.ID, set.Name, translator.GetSeasonName(set.SeasonID), set.PhysiqueID)
+        //            {
+        //                Description = set.Description,
+        //                ClothIDs = translator.GetSetClothesIDs(set)
+        //            };
+        //            return setDTO;
+        //        }
+        //        if (entity is Person person)
+        //        {
+        //            PersonDTO personDTO = new PersonDTO(person.ID, person.Name)
+        //            {
+        //                Type = person.Type,
+        //                PhysiqueIDs = translator.GetPersonPhysiqueIDs(person)
+        //            };
+        //            return personDTO;
+        //        }
+        //        if (entity is Physique physique)
+        //        {
+        //            PhysiqueDTO physiqueDTO = new PhysiqueDTO(physique.ID, physique.Growth, physique.Weight, physique.PersonID)
+        //            {
+        //                Description = physique.Description,
+        //                Force = physique.Force,
+        //                SetIDs = translator.GetPhysiqueSetIDs(physique)
+        //            };
+        //            return physiqueDTO;
+        //        }
+
+        //        return null;
+        //    }
+        //}
     }
 }

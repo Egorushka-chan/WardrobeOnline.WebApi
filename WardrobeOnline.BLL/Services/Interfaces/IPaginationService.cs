@@ -2,7 +2,7 @@
 
 namespace WardrobeOnline.BLL.Services.Interfaces
 {
-    public interface IPageServiceProvider<TEntity>
+    public interface IPaginationService<TEntity>
         where TEntity : class, IEntity
     {
         public IReadOnlyList<TEntity> GetPagedQuantityOf(int pageIndex, int pageSize);

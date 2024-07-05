@@ -1,4 +1,5 @@
-﻿using WardrobeOnline.BLL.Models;
+﻿using System.Collections.Immutable;
+using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Models.Interfaces;
 using WardrobeOnline.BLL.Services.Extensions;
 using WardrobeOnline.BLL.Services.Interfaces;
@@ -14,18 +15,23 @@ namespace WardrobeOnline.BLL.Services.Implementations
         private IRepository<Cloth> _repository = repository;
         private ICastHelper _castHelper = castHelper;
 
-        public Task<bool> TryAdd(ClothDTO entity)
+        public async Task<bool> TryAdd(ClothDTO entity)
         {
-            return _repository.TryAdd((Cloth)entity);
+            entity.TranslateToDB(out Cloth? cloth, _castHelper);
+            if (cloth == null)
+                return false;
+            return await _repository.TryAdd(cloth);
         }
 
-        public ClothDTO? TryGet(int id)
+        public ClothDTO? TryGetAsync(int id)
         {
             var get = _repository.TryGet(id);
             if (get == null)
                 return null;
 
-            return get.TranslateToDTO(_castHelper);
+            get.TranslateToDTO(out ClothDTO? clothDTO, _castHelper);
+
+            return clothDTO;
         }
 
         public IReadOnlyCollection<ClothDTO> GetAll()

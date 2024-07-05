@@ -10,7 +10,6 @@ namespace WardrobeOnline.WebApi.Controllers
     [ApiController]
     public class ClothesController : ControllerBase
     {
-        // TODO: Чё-то к пятнице работать должно
         [HttpGet("Person/{id}")]
         public IResult GetPersonClothes(int id)
         {

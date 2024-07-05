@@ -1,11 +1,7 @@
-﻿using System.Xml.Linq;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Services.Interfaces;
-using WardrobeOnline.DAL.Entities;
 
 namespace WardrobeOnline.WebApi.Controllers
 {
@@ -15,7 +11,7 @@ namespace WardrobeOnline.WebApi.Controllers
     {
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public IResult GetPersonInfo(int id, [FromServices] ICRUDProvider<PersonDTO> crudProvider)
         {
             if(id < 1)
@@ -25,7 +21,7 @@ namespace WardrobeOnline.WebApi.Controllers
                 return TypedResults.BadRequest(errorResponse);
             }
 
-            PersonDTO? get = crudProvider.TryGet(id);
+            PersonDTO? get = crudProvider.TryGetAsync(id);
             if(get == null) 
             {
                 ErrorResponse errorResponse = new ErrorResponse();
@@ -38,7 +34,7 @@ namespace WardrobeOnline.WebApi.Controllers
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        [HttpDelete("/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IResult> DeletePerson(int id, [FromServices] ICRUDProvider<PersonDTO> crudProvider) 
         {
             if(id < 1)
@@ -61,7 +57,7 @@ namespace WardrobeOnline.WebApi.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        [HttpPost("/")]
+        [HttpPost]
         public async Task<IResult> CreatePerson([FromBody] PersonDTO personDTO, [FromServices] ICRUDProvider<PersonDTO> crudProvider) 
         {
             if (personDTO is null)
@@ -76,7 +72,7 @@ namespace WardrobeOnline.WebApi.Controllers
 
             if (personDTO.ID != default)
             {
-                responseDTO = crudProvider.TryGet(personDTO.ID);
+                responseDTO = crudProvider.TryGetAsync(personDTO.ID);
                 passed = passed && responseDTO is not null;
             }
 
@@ -92,10 +88,9 @@ namespace WardrobeOnline.WebApi.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        [HttpPut("/{id?}")]
+        [HttpPut("{id?}")]
         public async Task<IResult> UpdatePersonInfo(int? id, [FromBody] PersonDTO personDTO, [FromServices] ICRUDProvider<PersonDTO> crudProvider)
         {
-            // TODO: TryUpdate работает неправильно (создаёт вместо изменения)
             bool hasID = id is not null || personDTO.ID != default;
 
             if (!hasID) 
@@ -107,11 +102,10 @@ namespace WardrobeOnline.WebApi.Controllers
 
             id = id is null ? personDTO.ID : id; // выбираем ID; id в запросе приоритетен
 
-            
-            bool passed = await crudProvider.TryUpdate(personDTO);
+            bool passed = await crudProvider.TryUpdate(personDTO with { ID = id.Value});
 
             PersonDTO? responseDTO = personDTO;
-            responseDTO = crudProvider.TryGet(personDTO.ID);
+            responseDTO = crudProvider.TryGetAsync(id.Value);
             passed = passed && responseDTO is not null;
 
             if (!passed) 
@@ -124,29 +118,74 @@ namespace WardrobeOnline.WebApi.Controllers
             return TypedResults.Ok(responseDTO);
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpGet("Physique/{id}")]
-        public IResult GetPersonPhysiques(int id, int token)
+        public IResult GetPersonPhysiques(int id, [FromServices] ICRUDProvider<PhysiqueDTO> crudProvider)
         {
-            throw new NotImplementedException();
+            if (id < 1)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Invalid ID";
+                return TypedResults.BadRequest(errorResponse);
+            }
+
+            PhysiqueDTO? get = crudProvider.TryGetAsync(id);
+            if (get == null)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Person with such ID wasn't found";
+                return TypedResults.BadRequest(errorResponse);
+            }
+
+            return TypedResults.Ok(get);
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpPost("Physique/")]
-        public IResult CreatePhysique()
+        public async Task<IResult> CreatePhysique([FromBody] PhysiqueDTO physiqueDTO,[FromServices] ICRUDProvider<PhysiqueDTO> crudProvider)
         {
-            throw new NotImplementedException();
+            if (physiqueDTO is null)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Body contains no info";
+                return TypedResults.BadRequest(errorResponse);
+            }
+
+            bool passed = await crudProvider.TryAdd(physiqueDTO);
+            PhysiqueDTO? responseDTO = physiqueDTO;
+
+            if (physiqueDTO.ID != default)
+            {
+                responseDTO = crudProvider.TryGetAsync(physiqueDTO.ID);
+                passed = passed && responseDTO is not null;
+            }
+
+            if (!passed)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Failed to apply data";
+                return TypedResults.BadRequest(errorResponse);
+            }
+
+            return TypedResults.Ok(responseDTO);
         }
 
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpDelete("Physique/{id}")]
-        public IResult DeletePhysique(int id, int token)
-        {
-            throw new NotImplementedException();
-        }
-        [HttpPut("Physique/{id}")]
-        public IResult UpdatePhysique(int id, int token)
+        public IResult DeletePhysique(int id)
         {
             throw new NotImplementedException();
         }
 
-       
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [HttpPut("Physique/{id}")]
+        public IResult UpdatePhysique(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
