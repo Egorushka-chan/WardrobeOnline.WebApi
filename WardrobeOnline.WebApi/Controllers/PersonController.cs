@@ -12,7 +12,7 @@ namespace WardrobeOnline.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpGet("{id}")]
-        public IResult GetPersonInfo(int id, [FromServices] ICRUDProvider<PersonDTO> crudProvider)
+        public async Task<IResult> GetPersonInfo(int id, [FromServices] ICRUDProvider<PersonDTO> crudProvider)
         {
             if(id < 1)
             {
@@ -21,7 +21,7 @@ namespace WardrobeOnline.WebApi.Controllers
                 return TypedResults.BadRequest(errorResponse);
             }
 
-            PersonDTO? get = crudProvider.TryGetAsync(id);
+            PersonDTO? get = await crudProvider.TryGetAsync(id);
             if(get == null) 
             {
                 ErrorResponse errorResponse = new ErrorResponse();
@@ -67,12 +67,12 @@ namespace WardrobeOnline.WebApi.Controllers
                 return TypedResults.BadRequest(errorResponse);
             }
 
-            bool passed = await crudProvider.TryAdd(personDTO);
+            bool passed = await crudProvider.TryAdd(personDTO) is not null;
             PersonDTO? responseDTO = personDTO;
 
             if (personDTO.ID != default)
             {
-                responseDTO = crudProvider.TryGetAsync(personDTO.ID);
+                responseDTO = await crudProvider.TryGetAsync(personDTO.ID);
                 passed = passed && responseDTO is not null;
             }
 
@@ -102,10 +102,10 @@ namespace WardrobeOnline.WebApi.Controllers
 
             id = id is null ? personDTO.ID : id; // выбираем ID; id в запросе приоритетен
 
-            bool passed = await crudProvider.TryUpdate(personDTO with { ID = id.Value});
+            bool passed = await crudProvider.TryUpdate(personDTO with { ID = id.Value}) is not null;
 
             PersonDTO? responseDTO = personDTO;
-            responseDTO = crudProvider.TryGetAsync(id.Value);
+            responseDTO = await crudProvider.TryGetAsync(id.Value);
             passed = passed && responseDTO is not null;
 
             if (!passed) 
@@ -121,7 +121,7 @@ namespace WardrobeOnline.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpGet("Physique/{id}")]
-        public IResult GetPersonPhysiques(int id, [FromServices] ICRUDProvider<PhysiqueDTO> crudProvider)
+        public async Task<IResult> GetPersonPhysiques(int id, [FromServices] ICRUDProvider<PhysiqueDTO> crudProvider)
         {
             if (id < 1)
             {
@@ -130,7 +130,7 @@ namespace WardrobeOnline.WebApi.Controllers
                 return TypedResults.BadRequest(errorResponse);
             }
 
-            PhysiqueDTO? get = crudProvider.TryGetAsync(id);
+            PhysiqueDTO? get = await crudProvider.TryGetAsync(id);
             if (get == null)
             {
                 ErrorResponse errorResponse = new ErrorResponse();
@@ -153,12 +153,12 @@ namespace WardrobeOnline.WebApi.Controllers
                 return TypedResults.BadRequest(errorResponse);
             }
 
-            bool passed = await crudProvider.TryAdd(physiqueDTO);
+            bool passed = await crudProvider.TryAdd(physiqueDTO) is not null;
             PhysiqueDTO? responseDTO = physiqueDTO;
 
             if (physiqueDTO.ID != default)
             {
-                responseDTO = crudProvider.TryGetAsync(physiqueDTO.ID);
+                responseDTO = await crudProvider.TryGetAsync(physiqueDTO.ID);
                 passed = passed && responseDTO is not null;
             }
 

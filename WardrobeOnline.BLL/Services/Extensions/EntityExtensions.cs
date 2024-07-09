@@ -40,8 +40,10 @@ namespace WardrobeOnline.BLL.Services.Extensions
                     var photoPaths = translator.GetPhotoPaths(cloth.Photos);
                     var materials = translator.GetClothMaterialNames(cloth);
 
-                    return new ClothDTO(cloth.ID, cloth.Name)
+                    return new ClothDTO()
                     {
+                        ID = cloth.ID,
+                        Name = cloth.Name,
                         Description = cloth.Description,
                         Rating = cloth.Rating,
                         Size = cloth.Size,
@@ -51,8 +53,12 @@ namespace WardrobeOnline.BLL.Services.Extensions
                 }
                 if(entity is Set set)
                 {
-                    SetDTO setDTO = new SetDTO(set.ID, set.Name, translator.GetSeasonName(set.SeasonID), set.PhysiqueID)
+                    SetDTO setDTO = new SetDTO()
                     {
+                        ID = set.ID,
+                        Name = set.Name,
+                        Season = set.Season?.Name,
+                        PhysiqueID = set.PhysiqueID,
                         Description = set.Description,
                         ClothIDs = translator.GetSetClothesIDs(set)
                     };
@@ -60,8 +66,10 @@ namespace WardrobeOnline.BLL.Services.Extensions
                 }
                 if(entity is Person person)
                 {
-                    PersonDTO personDTO = new PersonDTO(person.ID, person.Name)
+                    PersonDTO personDTO = new PersonDTO()
                     {
+                        ID = person.ID,
+                        Name = person.Name,
                         Type = person.Type,
                         PhysiqueIDs = translator.GetPersonPhysiqueIDs(person)
                     };
@@ -69,8 +77,12 @@ namespace WardrobeOnline.BLL.Services.Extensions
                 }
                 if(entity is Physique physique)
                 {
-                    PhysiqueDTO physiqueDTO = new PhysiqueDTO(physique.ID, physique.Growth, physique.Weight, physique.PersonID)
+                    PhysiqueDTO physiqueDTO = new PhysiqueDTO()
                     {
+                        ID=physique.ID,
+                        Growth = physique.Growth,
+                        Weight = physique.Weight,
+                        PersonID = physique.PersonID,
                         Description = physique.Description,
                         Force = physique.Force,
                         SetIDs = translator.GetPhysiqueSetIDs(physique)
@@ -111,7 +123,7 @@ namespace WardrobeOnline.BLL.Services.Extensions
                     ID = self.ID,
                     Name = self.Name,
                     Description = self.Description,
-                    Rating = self.Rating,
+                    Rating = self.Rating.GetValueOrDefault(),
                     Size = self.Size,
                 };
                 return cloth as Tdb;
@@ -119,31 +131,14 @@ namespace WardrobeOnline.BLL.Services.Extensions
 
             Tdb? GetSet(SetDTO self)
             {
-                int id;
-                if (castHelper.TryFindSeasonID(self.Season, out id))
+                Set set = new()
                 {
-                    Set set = new()
-                    {
-                        ID = self.ID,
-                        Name = self.Name,
-                        Description = self.Description,
-                        SeasonID = id,
-                        PhysiqueID = self.PhysiqueID
-                    };
-                    return set as Tdb;
-                }
-                else
-                {
-                    Set set = new()
-                    {
-                        ID = self.ID,
-                        Name = self.Name,
-                        Description = self.Description,
-                        Season = new Season() { Name = self.Season },
-                        PhysiqueID = self.PhysiqueID
-                    };
-                    return set as Tdb;
-                }
+                    ID = self.ID,
+                    Name = self.Name,
+                    Description = self.Description,
+                    PhysiqueID = self.PhysiqueID.Value
+                };
+                return set as Tdb;
             }
 
             Tdb? GetPhysique(PhysiqueDTO self)
@@ -152,10 +147,10 @@ namespace WardrobeOnline.BLL.Services.Extensions
                 {
                     ID = self.ID,
                     Description = self.Description,
-                    Growth = self.Growth,
-                    Weight = self.Weight,
-                    Force = self.Force,
-                    PersonID = self.PersonID
+                    Growth = self.Growth.Value,
+                    Weight = self.Weight.Value,
+                    Force = self.Force.Value,
+                    PersonID = self.PersonID.Value
                 };
                 return physique as Tdb;
             }

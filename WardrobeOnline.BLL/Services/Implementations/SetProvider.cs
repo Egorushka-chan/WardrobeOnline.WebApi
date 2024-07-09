@@ -1,69 +1,85 @@
-﻿using WardrobeOnline.BLL.Models;
+﻿using System.Runtime.Serialization;
+
+using Microsoft.EntityFrameworkCore;
+
+using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Services.Extensions;
 using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
+using WardrobeOnline.DAL.Interfaces;
 using WardrobeOnline.DAL.Repositories.Interfaces;
 
 namespace WardrobeOnline.BLL.Services.Implementations
 {
-    public class SetProvider(
-        IRepository<Set> repository,
-        ICastHelper castHelper) : ICRUDProvider<SetDTO>
+    public class SetProvider : CRUDProvider<SetDTO, Set>
     {
-        private IRepository<Set> _repository = repository;
-        private ICastHelper _castHelper = castHelper;
-
-        public IReadOnlyCollection<SetDTO> GetAll()
+        public SetProvider(IWardrobeContext context, IPaginationService<Set> pagination, ICastHelper castHelper, IImageProvider imageProvider) 
+            : base(context, pagination, castHelper, imageProvider)
         {
-            return (from item in _repository.GetAll()
-                    select item.TranslateToDTO(_castHelper)).ToList();
+
         }
 
-        public Task<bool> TryAdd(SetDTO entity)
+        protected override async Task<Set?> AddTranslateToDB(SetDTO entityDTO)
         {
-            Set set = (Set)entity;
-            int id;
-            if (_castHelper.TryFindSeasonID(entity.Season, out id))
-            {
-                set.SeasonID = id;
+            entityDTO.TranslateToDB(out Set? setDB, _castHelper);
+            _castHelper.AssertSetSeason(entityDTO.Season, setDB);
+
+            if(entityDTO.ClothIDs != null) {
+                _castHelper.AssertSetClothes(entityDTO.ClothIDs, setDB);
             }
-            else
-            {
-                set.Season = new Season() { Name = entity.Name};
-            }
-            return _repository.TryAdd(set);
+
+            return setDB;
         }
 
-        public SetDTO? TryGetAsync(int id)
+        protected override async Task<SetDTO?> AddTranslateToDTO(Set entityDB)
         {
-            var get = _repository.TryGet(id);
-            if (get == null)
+            entityDB.TranslateToDTO(out SetDTO resultDTO, _castHelper);
+            return resultDTO;
+        }
+
+        protected override Task<Set?> GetFromDBbyID(int id)
+        {
+            return _context.Sets.Where(ent => ent.ID == id)
+                .Include(ent => ent.Season)
+                .Include(ent => ent.SetHasClothes)
+                .ThenInclude(ent => ent.Cloth)
+                .FirstOrDefaultAsync();
+        }
+
+        protected override async Task<SetDTO?> GetTranslateToDTO(Set entityDB)
+        {
+            entityDB.TranslateToDTO(out SetDTO resultDTO, _castHelper);
+            return resultDTO;
+        }
+
+        protected override async Task<Set?> UpdateTranslateToDB(SetDTO entityDTO)
+        {
+            Set? setDB = await GetFromDBbyID(entityDTO.ID);
+            if (setDB == null)
                 return null;
+            
+            if(entityDTO.Name is not null)
+                setDB.Name = entityDTO.Name;
 
-            return new SetDTO(get.ID, get.Name, get.Season?.Name ?? string.Empty, get.PhysiqueID)
-            {
+            if(entityDTO.Description is not null)
+                setDB.Description = entityDTO.Description;
 
-            };
+            if(entityDTO.Season is not null)
+                _castHelper.AssertSetSeason(entityDTO.Season, setDB);
+
+            if(entityDTO.PhysiqueID is not null)
+                setDB.PhysiqueID = entityDTO.PhysiqueID.Value;
+
+            if(entityDTO.ClothIDs is not null)
+                _castHelper.AssertSetClothes(entityDTO.ClothIDs, setDB);
+
+            return setDB;
         }
 
-        public Task<bool> TryRemove(int id)
+        protected override async Task<SetDTO?> UpdateTranslateToDTO(Set entityDB)
         {
-            return _repository.TryRemove(id);
-        }
-
-        public Task<bool> TryUpdate(SetDTO entity)
-        {
-            Set set = (Set)entity;
-            int id;
-            if (_castHelper.TryFindSeasonID(entity.Season, out id))
-            {
-                set.SeasonID = id;
-            }
-            else
-            {
-                set.Season = new Season() { Name = entity.Name};
-            }
-            return _repository.TryUpdate(set);
+            entityDB.TranslateToDTO(out SetDTO resultDTO, _castHelper);
+            return resultDTO;
         }
     }
 }

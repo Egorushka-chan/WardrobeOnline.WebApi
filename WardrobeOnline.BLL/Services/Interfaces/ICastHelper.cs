@@ -6,10 +6,13 @@ namespace WardrobeOnline.BLL.Services.Interfaces
     {
         IReadOnlyList<string> GetPhotoPaths(ICollection<Photo> photos);
         IReadOnlyList<string> GetClothMaterialNames(Cloth cloth);
-        bool TryFindSeasonID(string seasonName, out int id);
+        void AssertClothMaterials(IEnumerable<string> materials, Cloth cloth);
         IReadOnlyList<int> GetPersonPhysiqueIDs(Person person);
         IReadOnlyList<int> GetPhysiqueSetIDs(Physique physique);
         IReadOnlyList<int> GetSetClothesIDs(Set set);
-        string GetSeasonName(int seasonID);
+        void AssertPersonPhysiques(IReadOnlyList<int> physiqueIDs, Person personDB);
+        void AssertPhysiqueSets(IReadOnlyList<int> setIDs, Physique? physiqueDB);
+        void AssertSetSeason(string season, Set setDB);
+        void AssertSetClothes(IReadOnlyList<int> clothIDs, Set setDB);
     }
 }

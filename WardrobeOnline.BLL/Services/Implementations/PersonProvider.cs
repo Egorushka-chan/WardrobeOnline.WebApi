@@ -1,46 +1,83 @@
-﻿using WardrobeOnline.BLL.Models;
+﻿using Microsoft.EntityFrameworkCore;
+
+using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Services.Extensions;
 using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
+using WardrobeOnline.DAL.Interfaces;
 using WardrobeOnline.DAL.Repositories.Interfaces;
+using System.Linq;
 
 namespace WardrobeOnline.BLL.Services.Implementations
 {
-    public class PersonProvider(
-        IRepository<Person> repository,
-        ICastHelper castHelper) : ICRUDProvider<PersonDTO>
+    public class PersonProvider : CRUDProvider<PersonDTO, Person>
     {
-        private IRepository<Person> _repository = repository;
-        private ICastHelper _castHelper = castHelper;
-
-        public IReadOnlyCollection<PersonDTO> GetAll()
+        public PersonProvider(IWardrobeContext context, IPaginationService<Person> pagination, ICastHelper castHelper, IImageProvider imageProvider) 
+            : base(context, pagination, castHelper, imageProvider)
         {
-            return (from item in _repository.GetAll()
-                select item.TranslateToDTO(_castHelper)).ToList();
+
         }
 
-        public Task<bool> TryAdd(PersonDTO entity)
+        protected override async Task<Person?> AddTranslateToDB(PersonDTO entityDTO)
         {
-            return _repository.TryAdd((Person)entity);
+            entityDTO.TranslateToDB(out Person? personDB, _castHelper);
+            if(entityDTO.PhysiqueIDs != null) {
+                _castHelper.AssertPersonPhysiques(entityDTO.PhysiqueIDs, personDB);
+            }
+
+            return personDB;
         }
 
-        public PersonDTO? TryGetAsync(int id)
+        protected override async Task<PersonDTO?> AddTranslateToDTO(Person entityDB)
         {
-            var get = _repository.TryGet(id);
-            if (get == null)
+            entityDB.TranslateToDTO(out PersonDTO? resultDTO, _castHelper);
+            return resultDTO;
+        }
+
+        protected override Task<Person?> GetFromDBbyID(int id)
+        {
+            return _context.Persons.Where(ent => ent.ID == id)
+                .Include(ent => ent.Physiques).FirstOrDefaultAsync();
+        }
+
+        protected override async Task<PersonDTO?> GetTranslateToDTO(Person entityDB)
+        {
+            entityDB.TranslateToDTO(out PersonDTO? resultDTO, _castHelper);
+            if (resultDTO == null) 
+                return null;
+            
+            if(entityDB.Physiques.Count > 0)
+            {
+                List<int> physiqueIDs = (from Physique physique in entityDB.Physiques
+                                         select physique.ID).ToList();
+                resultDTO = resultDTO with { PhysiqueIDs =  physiqueIDs };
+            }
+
+            return resultDTO;
+        }
+
+        protected override async Task<Person?> UpdateTranslateToDB(PersonDTO entityDTO)
+        {
+            Person? personDB = await GetFromDBbyID(entityDTO.ID);
+            if (personDB == null)
                 return null;
 
-            return get.TranslateToDTO(_castHelper);
+            if(entityDTO.Name is not null)
+                personDB.Name = entityDTO.Name;
+
+            if(entityDTO.Type is not null)
+                personDB.Type = entityDTO.Type;
+
+            if(entityDTO.PhysiqueIDs is not null)
+                _castHelper.AssertPersonPhysiques(entityDTO.PhysiqueIDs, personDB);
+
+            return personDB;
         }
 
-        public Task<bool> TryRemove(int id)
+        protected override async Task<PersonDTO?> UpdateTranslateToDTO(Person entityDB)
         {
-            return _repository.TryRemove(id);
-        }
-
-        public Task<bool> TryUpdate(PersonDTO entity)
-        {
-            return _repository.TryUpdate((Person)entity);
+            entityDB.TranslateToDTO(out PersonDTO? resultDTO, _castHelper);
+            return resultDTO;
         }
     }
 }

@@ -1,110 +1,95 @@
 ﻿using System.Collections.Immutable;
+
+using Microsoft.EntityFrameworkCore;
+
+using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Models.Interfaces;
 using WardrobeOnline.BLL.Services.Extensions;
 using WardrobeOnline.BLL.Services.Interfaces;
+using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Interfaces;
 using WardrobeOnline.DAL.Repositories.Interfaces;
 
 namespace WardrobeOnline.BLL.Services.Implementations
 {
-    public class CRUDProvider<TEntityDTO, TEntityDB> 
+    public abstract class CRUDProvider<TEntityDTO, TEntityDB> 
         : ICRUDProvider<TEntityDTO>
         where TEntityDTO : class, IEntityDTO
         where TEntityDB : class, IEntity
     {
-        public CRUDProvider(IWardrobeContext context, ICastHelper castHelper, IPaginationService<TEntityDB> paginationService)
+        protected IWardrobeContext _context;
+        protected IPaginationService<TEntityDB> _pagination;
+        protected ICastHelper _castHelper;
+        protected IImageProvider _imageProvider;
+
+        public CRUDProvider(IWardrobeContext context, IPaginationService<TEntityDB> pagination, ICastHelper castHelper, IImageProvider imageProvider)
         {
-            _castHelper = castHelper;
             _context = context;
-            _pagination = paginationService;
+            _pagination = pagination;
+            _castHelper = castHelper;
+            _imageProvider = imageProvider;
         }
 
-        private IWardrobeContext _context;
-        private ICastHelper _castHelper;
-        private IPaginationService<TEntityDB> _pagination;
-
-        private int _changes = 0;
-
-        public IReadOnlyCollection<TEntityDTO> GetPagedQuantity(int pageIndex, int pageSize)
+        
+        public async Task<IReadOnlyCollection<TEntityDTO>> GetPagedQuantity(int pageIndex, int pageSize)
         {
             var list = _pagination.GetPagedQuantityOf(pageIndex, pageSize);
-            return TranslateToDTO(list);
+
+            List<TEntityDTO> resultList = [];
+            foreach ( var item in list ) {
+                var itemDTO = await GetTranslateToDTO(item);
+                resultList.Add(itemDTO);
+            }
+            return resultList;
         }
 
         public async Task<TEntityDTO?> TryAdd(TEntityDTO entity)
         {
-            TEntityDB entityDB = TranslateToDB(entity);
-            var result = await _context.DBSet<TEntityDB>().AddAsync(entityDB);
-            _changes++;
-            return TranslateToDTO(entityDB);
+            TEntityDB? entityDB = await AddTranslateToDB(entity);
+            if (entityDB == null) 
+                return null;
+
+            _context.DBSet<TEntityDB>().Add(entityDB);
+            return await AddTranslateToDTO(entityDB);
         }
 
         public async Task<TEntityDTO?> TryGetAsync(int id)
         {
-            TEntityDB? entityDB = await _context.DBSet<TEntityDB>().FindAsync(id);
-            if (entityDB is null)
+            var result = await GetFromDBbyID(id);
+            if (result == null)
                 return null;
-            return TranslateToDTO(entityDB);
+            return await GetTranslateToDTO(result);
         }
 
-        public Task<bool> TryRemove(int id)
+        public async Task<bool> TryRemove(int id)
         {
-            throw new NotImplementedException();
+            int deleted = await _context.Clothes.Where(ent => ent.ID == id).ExecuteDeleteAsync();
+            return deleted > 0;
         }
 
-        public Task<TEntityDTO?> TryUpdate(TEntityDTO entity)
+        public async Task<TEntityDTO?> TryUpdate(TEntityDTO entity)
         {
-            throw new NotImplementedException();
+            TEntityDB? cloth = await UpdateTranslateToDB(entity);
+            if (cloth == null)
+                return null;
+
+            return await UpdateTranslateToDTO(cloth);
         }
 
-        protected IReadOnlyCollection<TEntityDTO> TranslateToDTO(IEnumerable<TEntityDB> entityDBs)
+        public async Task<int> SaveChanges()
         {
-            List<TEntityDTO> returnList = [];
-            foreach (var entityDB in entityDBs)
-            {
-                returnList.Add(TranslateToDTO(entityDB));
-            }
-            return returnList.ToImmutableArray();
+            return await _context.SaveChangesAsync();
         }
 
-        protected IReadOnlyCollection<TEntityDB> TranslateToDB(IEnumerable<TEntityDTO> entityDTOs)
-        {
-            List<TEntityDB> returnList = [];
-            foreach (var entityDTO in entityDTOs)
-            {
-                returnList.Add(TranslateToDB(entityDTO));
-            }
-            return returnList.ToImmutableArray();
-        }
+        protected abstract Task<TEntityDB?> GetFromDBbyID(int id);
+        protected abstract Task<TEntityDTO?> GetTranslateToDTO(TEntityDB entityDB);
 
-        /// <summary>
-        /// Метод можно переопределить для изменения стандартного приведения классов DTO к DB
-        /// </summary>
-        /// <param name="entityDTO">Элемент, реализующий интерфейс <see cref="IEntityDTO"/></param>
-        /// <exception cref="NotImplementedException"></exception>
-        protected virtual TEntityDB TranslateToDB(TEntityDTO entityDTO)
-        {
-            entityDTO.TranslateToDB(out TEntityDB? resultDB, _castHelper);
-            if (resultDB is null)
-            {
-                throw new NotImplementedException("Стандартный переводчик классов не работает");
-            }
-            return resultDB;
-        }
+        protected abstract Task<TEntityDB?> AddTranslateToDB(TEntityDTO entityDTO);
 
-        /// <summary>
-        /// Метод можно переопределить для изменения стандартного приведения классов DB к DTO
-        /// </summary>
-        /// <param name="entityDB">Элемент, реализующий интерфейс <see cref="IEntity"/></param>
-        /// <exception cref="NotImplementedException"></exception>
-        protected virtual TEntityDTO TranslateToDTO(TEntityDB entityDB)
-        {
-            entityDB.TranslateToDTO(out TEntityDTO? resultDTO, _castHelper);
-            if(resultDTO is null)
-            {
-                throw new NotImplementedException("Стандартный переводчик классов не работает");
-            }
-            return resultDTO;
-        }
+        protected abstract Task<TEntityDTO?> AddTranslateToDTO(TEntityDB entityDB);
+
+        protected abstract Task<TEntityDB?> UpdateTranslateToDB(TEntityDTO entityDTO);
+
+        protected abstract Task<TEntityDTO?> UpdateTranslateToDTO(TEntityDB entityDB);
     }
 }

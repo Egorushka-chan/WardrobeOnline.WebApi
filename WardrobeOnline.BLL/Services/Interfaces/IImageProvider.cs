@@ -1,7 +1,13 @@
-﻿namespace WardrobeOnline.BLL.Services.Interfaces
+﻿using WardrobeOnline.DAL.Entities;
+
+namespace WardrobeOnline.BLL.Services.Interfaces
 {
     public interface IImageProvider
     {
-        public string GetImageLink(int imageID);
+        string GetImageLink(int imageID);
+        bool Exist(string imagePath);
+        internal int GetPhotoID(string imagePath);
+        void Delete(string imagePath);
+        void Add(string imagePath);
     }
 }

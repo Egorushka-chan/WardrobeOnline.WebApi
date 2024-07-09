@@ -5,16 +5,10 @@ namespace WardrobeOnline.BLL.Models
 {
     public record ClothDTO: IEntityDTO
     {
-        // Пришлось сделать такой конструктор, потому конструктор в объявлении записи сразу и поля создаёт
-        public ClothDTO(int iD, string name)
-        {
-            ID = iD;
-            Name = name;
-        }
         public int ID { get; init; }
-        public string Name { get; init; }
+        public string? Name { get; init; }
         public string? Description { get; init; }
-        public int Rating { get; init; }
+        public int? Rating { get; init; }
         public string? Size { get; init; }
         public IReadOnlyList<string>? Materials { get; init; }
         public IReadOnlyList<string>? PhotoPaths { get; init; }

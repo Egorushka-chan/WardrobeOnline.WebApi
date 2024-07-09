@@ -5,20 +5,11 @@ namespace WardrobeOnline.BLL.Models
 {
     public record SetDTO : IEntityDTO
     {
-        // Пришлось сделать такой конструктор, потому конструктор в обьявлении записи сразу и поля создаёт
-        public SetDTO(int iD, string name, string season, int physiqueID)
-        {
-            ID = iD;
-            Name = name;
-            Season = season;
-            PhysiqueID = physiqueID;
-        }
-
         public int ID { get; init; }
-        public string Name { get; init; }
+        public string? Name { get; init; }
         public string? Description { get; init; }
-        public string Season { get; init; }
-        public int PhysiqueID { get; init; }
+        public string? Season { get; init; }
+        public int? PhysiqueID { get; init; }
         public IReadOnlyList<int>? ClothIDs { get; init; }
 
         // Приведения прикольны(в структурах), но тут к сожалению не применимы (даже не наследуешь нормально). Мне в проекте требуется сложное приведение

@@ -5,14 +5,8 @@ namespace WardrobeOnline.BLL.Models
 {
     public record PersonDTO : IEntityDTO
     {
-        // Пришлось сделать такой конструктор, потому что конструктор в объявлении записи сразу и поля создаёт
-        public PersonDTO(int iD, string name)
-        {
-            ID = iD;
-            Name = name;
-        }
         public int ID { get; init; }
-        public string Name { get; init; }
+        public string? Name { get; init; }
         public string? Type { get; init; }
         public IReadOnlyList<int>? PhysiqueIDs { get; init; }
 

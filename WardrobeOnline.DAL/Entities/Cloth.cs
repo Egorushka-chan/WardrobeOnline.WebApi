@@ -12,8 +12,7 @@ namespace WardrobeOnline.DAL.Entities
         [Required]
         public string Name { get; set; }
         public string? Description { get; set; }
-        public int SelectedPhotoID { get; set; }
-        public int Rating { get; set; }
+        public int? Rating { get; set; }
         public string? Size { get; set; }
 
         public virtual ICollection<ClothHasMaterials> ClothHasMaterials { get; set; } = new List<ClothHasMaterials>();
