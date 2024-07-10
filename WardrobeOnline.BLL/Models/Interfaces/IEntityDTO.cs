@@ -2,7 +2,6 @@
 {
     public interface IEntityDTO
     {
-        // TODO: ПОДУМАТЬ: нужны ли такие DTO объекты, и нужны ли в них конструкторы
-         int ID { get; init; }
+         int ID { get; set; }
     }
 }

@@ -12,45 +12,24 @@ namespace WardrobeOnline.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpGet("{id}")]
-        public async Task<IResult> GetPersonInfo(int id, [FromServices] ICRUDProvider<PersonDTO> crudProvider)
+        public async Task<IResult> GetPersonInfo(int id, [FromServices] IValidationLayer<PersonDTO> validationLayer)
         {
-            if(id < 1)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Invalid ID";
-                return TypedResults.BadRequest(errorResponse);
-            }
+            (ErrorResponse? errorResponse, PersonDTO? dto) = await validationLayer.Get(id);
 
-            PersonDTO? get = await crudProvider.TryGetAsync(id);
-            if(get == null) 
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Person with such ID wasn't found";
+            if(errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
-            }
-
-            return TypedResults.Ok(get);
+            else
+                return TypedResults.Ok(dto);
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpDelete("{id}")]
-        public async Task<IResult> DeletePerson(int id, [FromServices] ICRUDProvider<PersonDTO> crudProvider) 
+        public async Task<IResult> DeletePerson(int id, [FromServices] IValidationLayer<PersonDTO> validationLayer) 
         {
-            if(id < 1)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Invalid ID";
+            ErrorResponse? errorResponse = await validationLayer.Delete(id);
+            if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
-            }
-
-            bool passed = await crudProvider.TryRemove(id);
-            if (!passed)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = $"Failed to delete Person {id}";
-                return TypedResults.BadRequest(errorResponse);
-            }
 
             return TypedResults.NoContent();
         }
@@ -58,128 +37,78 @@ namespace WardrobeOnline.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpPost]
-        public async Task<IResult> CreatePerson([FromBody] PersonDTO personDTO, [FromServices] ICRUDProvider<PersonDTO> crudProvider) 
+        public async Task<IResult> CreatePerson([FromBody] PersonDTO personDTO, [FromServices] IValidationLayer<PersonDTO> validationLayer) 
         {
-            if (personDTO is null)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Body contains no info";
-                return TypedResults.BadRequest(errorResponse);
-            }
-            
-            PersonDTO? responseDTO = await crudProvider.TryAdd(personDTO);
-            bool passed = responseDTO is not null;
+            (ErrorResponse? errorResponse, PersonDTO? dto) = await validationLayer.Post(personDTO);
 
-            if (!passed)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Failed to apply data";
+            if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
-            }
-
-            return TypedResults.Ok(responseDTO);
+            else
+                return TypedResults.Ok(dto);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpPut("{id?}")]
-        public async Task<IResult> UpdatePersonInfo(int? id, [FromBody] PersonDTO personDTO, [FromServices] ICRUDProvider<PersonDTO> crudProvider)
+        public async Task<IResult> UpdatePersonInfo(int? id, [FromBody] PersonDTO personDTO, [FromServices] IValidationLayer<PersonDTO> validationLayer)
         {
-            bool hasID = id is not null || personDTO.ID != default;
+            (ErrorResponse? errorResponse, PersonDTO? dto) = await validationLayer.Post(personDTO);
 
-            if (!hasID) 
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Request contains no ID, unable to proceed";
+            if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
-            }
-
-            id = id is null ? personDTO.ID : id; // выбираем ID; id в запросе приоритетен
-
-            bool passed = await crudProvider.TryUpdate(personDTO with { ID = id.Value}) is not null;
-
-            PersonDTO? responseDTO = personDTO;
-            responseDTO = await crudProvider.TryGetAsync(id.Value);
-            passed = passed && responseDTO is not null;
-
-            if (!passed) 
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Failed to update data";
-                return TypedResults.BadRequest(errorResponse);
-            }
-
-            return TypedResults.Ok(responseDTO);
+            else
+                return TypedResults.Ok(dto);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpGet("Physique/{id}")]
-        public async Task<IResult> GetPersonPhysiques(int id, [FromServices] ICRUDProvider<PhysiqueDTO> crudProvider)
+        public async Task<IResult> GetPersonPhysique(int id, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
         {
-            if (id < 1)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Invalid ID";
-                return TypedResults.BadRequest(errorResponse);
-            }
+            (ErrorResponse? errorResponse, PhysiqueDTO? dto) = await validationLayer.Get(id);
 
-            PhysiqueDTO? get = await crudProvider.TryGetAsync(id);
-            if (get == null)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Person with such ID wasn't found";
+            if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
-            }
-
-            return TypedResults.Ok(get);
+            else
+                return TypedResults.Ok(dto);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpPost("Physique/")]
-        public async Task<IResult> CreatePhysique([FromBody] PhysiqueDTO physiqueDTO,[FromServices] ICRUDProvider<PhysiqueDTO> crudProvider)
+        public async Task<IResult> CreatePhysique([FromBody] PhysiqueDTO physiqueDTO, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
         {
-            if (physiqueDTO is null)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Body contains no info";
+            (ErrorResponse? errorResponse, PhysiqueDTO? dto) = await validationLayer.Post(physiqueDTO);
+
+            if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
-            }
-
-            bool passed = await crudProvider.TryAdd(physiqueDTO) is not null;
-            PhysiqueDTO? responseDTO = physiqueDTO;
-
-            if (physiqueDTO.ID != default)
-            {
-                responseDTO = await crudProvider.TryGetAsync(physiqueDTO.ID);
-                passed = passed && responseDTO is not null;
-            }
-
-            if (!passed)
-            {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Failed to apply data";
-                return TypedResults.BadRequest(errorResponse);
-            }
-
-            return TypedResults.Ok(responseDTO);
+            else
+                return TypedResults.Ok(dto);
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpDelete("Physique/{id}")]
-        public IResult DeletePhysique(int id)
+        public async Task<IResult> DeletePhysique(int id, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
         {
-            throw new NotImplementedException();
+            ErrorResponse? errorResponse = await validationLayer.Delete(id);
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+
+            return TypedResults.NoContent();
         }
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpPut("Physique/{id}")]
-        public IResult UpdatePhysique(int id)
+        public async Task<IResult> UpdatePhysique(int id, [FromBody] PhysiqueDTO physiqueDTO, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
         {
-            throw new NotImplementedException();
+            (ErrorResponse? errorResponse, PhysiqueDTO? dto) = await validationLayer.Post(physiqueDTO);
+
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+            else
+                return TypedResults.Ok(dto);
         }
     }
 }

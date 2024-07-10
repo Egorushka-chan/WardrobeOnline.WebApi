@@ -7,9 +7,9 @@ namespace WardrobeOnline.BLL.Services.Interfaces
     {
         Task<IReadOnlyCollection<TEntityDTO>> GetPagedQuantity(int pageIndex, int pageSize);
         Task<TEntityDTO?> TryGetAsync(int id);
-        Task<TEntityDTO?> TryAdd(TEntityDTO entity);
-        Task<bool> TryRemove(int id);
-        Task<TEntityDTO?> TryUpdate(TEntityDTO entity);
-        Task<int> SaveChanges();
+        Task<TEntityDTO?> TryAddAsync(TEntityDTO entity);
+        Task<bool> TryRemoveAsync(int id);
+        Task<TEntityDTO?> TryUpdateAsync(TEntityDTO entity);
+        Task<int> SaveChangesAsync();
     }
 }

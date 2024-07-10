@@ -5,7 +5,7 @@ namespace WardrobeOnline.BLL.Models
 {
     public record PhysiqueDTO : IEntityDTO
     {
-        public int ID { get; init; }
+        public int ID { get; set; }
         public string? Description { get; init; }
         public int? Growth { get; init; }
         public int? Weight { get; init; }

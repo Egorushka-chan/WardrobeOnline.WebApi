@@ -1,49 +1,63 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WardrobeOnline.BLL.Models;
+using WardrobeOnline.BLL.Services.Interfaces;
 
 namespace WardrobeOnline.WebApi.Controllers
 {
-    /// <summary>
-    /// Пока только заглушки
-    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class SetController : ControllerBase
     {
-        //[HttpGet]
-        //public IResult GetPersonSets(int id, int token)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //[HttpGet]
-        //public IResult GetSetInfo(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //[HttpGet]
-        //public IResult GetSetClothes(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //[HttpDelete]
-        //public IResult DeleteSet(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //[HttpPost]
-        //public IResult CreateSet(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //[HttpPost]
-        //public IResult PostNewCloth(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //[HttpDelete]
-        //public IResult RemoveCloth(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SetDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [HttpGet("{id}")]
+        public async Task<IResult> Get(int id, [FromServices] IValidationLayer<SetDTO> validationLayer)
+        {
+            (ErrorResponse? errorResponse, SetDTO? dto) = await validationLayer.Get(id);
+
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+            else
+                return TypedResults.Ok(dto);
+        }
+
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [HttpDelete("{id}")]
+        public async Task<IResult> Delete(int id, [FromServices] IValidationLayer<SetDTO> validationLayer)
+        {
+            ErrorResponse? errorResponse = await validationLayer.Delete(id);
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+
+            return TypedResults.NoContent();
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SetDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [HttpPost]
+        public async Task<IResult> Create([FromBody] SetDTO setDTO, [FromServices] IValidationLayer<SetDTO> validationLayer)
+        {
+            (ErrorResponse? errorResponse, SetDTO? dto) = await validationLayer.Post(setDTO);
+
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+            else
+                return TypedResults.Ok(dto);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SetDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [HttpPut("{id?}")]
+        public async Task<IResult> Update(int? id, [FromBody] SetDTO setDTO, [FromServices] IValidationLayer<SetDTO> validationLayer)
+        {
+            (ErrorResponse? errorResponse, SetDTO? dto) = await validationLayer.Post(setDTO);
+
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+            else
+                return TypedResults.Ok(dto);
+        }
     }
 }

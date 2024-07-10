@@ -14,16 +14,16 @@ namespace WardrobeOnline.BLL.Services.Implementations
             if(IsCorrectID(id))
             {
                 ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = "Invalid ID";
+                errorResponse.Body = "ID sent by client is invalid";
                 errorResponse.Code = (int)HttpStatusCode.BadRequest;
                 return errorResponse;
             }
 
-            bool passed = await _crudProvider.TryRemove(id);
+            bool passed = await _crudProvider.TryRemoveAsync(id);
             if (!passed)
             {
                 ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Body = $"Failed to delete Person {id}";
+                errorResponse.Body = $"Failed to delete {nameof(TEntityDTO)} {id}";
                 errorResponse.Code = (int)HttpStatusCode.BadRequest;
                 return errorResponse;
             }
@@ -31,19 +31,89 @@ namespace WardrobeOnline.BLL.Services.Implementations
             return null;
         }
 
-        public async Task<(ErrorResponse?, TEntityDTO)> Get(int id)
+        public async Task<(ErrorResponse?, TEntityDTO?)> Get(int id)
         {
-            throw new NotImplementedException();
+            if (IsCorrectID(id))
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "ID sent by client is invalid";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            TEntityDTO? responseDTO = await _crudProvider.TryGetAsync(id);
+
+            if (responseDTO == null)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Entity with such ID wasn't found";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            return (null, responseDTO);
         }
 
-        public async Task<(ErrorResponse?, TEntityDTO)> Post(TEntityDTO entityDTO)
+        public async Task<(ErrorResponse?, TEntityDTO?)> Post(TEntityDTO entityDTO)
         {
-            throw new NotImplementedException();
+            if (entityDTO is null)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Body contains no info";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            TEntityDTO? responseDTO = await _crudProvider.TryAddAsync(entityDTO);
+            bool passed = responseDTO is not null;
+
+            if (!passed)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Failed to apply data";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            return (null, responseDTO);
         }
 
-        public async Task<(ErrorResponse?, TEntityDTO)> Put(TEntityDTO entityDTO)
+        public async Task<(ErrorResponse?, TEntityDTO?)> Put(int? id, TEntityDTO entityDTO)
         {
-            throw new NotImplementedException();
+            bool hasID = id is not null || entityDTO.ID != default;
+
+            if (!hasID)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Request contains no ID, unable to proceed";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            id = id is null ? entityDTO.ID : id; // выбираем ID; id в запросе приоритетен
+
+            if (IsCorrectID(id.Value))
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "ID sent by client is invalid";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            entityDTO.ID = id.Value;
+
+            TEntityDTO? responseDTO = await _crudProvider.TryUpdateAsync(entityDTO);
+            bool passed = responseDTO is not null;
+
+            if (!passed)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Failed to update data";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            return (null, responseDTO);
         }
 
         private bool IsCorrectID(int id) => id > 0;

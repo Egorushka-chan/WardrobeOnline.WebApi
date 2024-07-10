@@ -43,14 +43,14 @@ namespace WardrobeOnline.BLL.Services.Implementations
             return resultList;
         }
 
-        public async Task<TEntityDTO?> TryAdd(TEntityDTO entity)
+        public async Task<TEntityDTO?> TryAddAsync(TEntityDTO entity)
         {
             TEntityDB? entityDB = await AddTranslateToDB(entity);
             if (entityDB == null) 
                 return null;
 
             _context.DBSet<TEntityDB>().Add(entityDB);
-            int result = await SaveChanges();
+            int result = await SaveChangesAsync();
             return await AddTranslateToDTO(entityDB);
         }
 
@@ -62,22 +62,22 @@ namespace WardrobeOnline.BLL.Services.Implementations
             return await GetTranslateToDTO(result);
         }
 
-        public async Task<bool> TryRemove(int id)
+        public async Task<bool> TryRemoveAsync(int id)
         {
             int deleted = await _context.Clothes.Where(ent => ent.ID == id).ExecuteDeleteAsync();
             return deleted > 0;
         }
 
-        public async Task<TEntityDTO?> TryUpdate(TEntityDTO entity)
+        public async Task<TEntityDTO?> TryUpdateAsync(TEntityDTO entity)
         {
             TEntityDB? cloth = await UpdateTranslateToDB(entity);
             if (cloth == null)
                 return null;
-            await SaveChanges();
+            await SaveChangesAsync();
             return await UpdateTranslateToDTO(cloth);
         }
 
-        public async Task<int> SaveChanges()
+        public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
         }

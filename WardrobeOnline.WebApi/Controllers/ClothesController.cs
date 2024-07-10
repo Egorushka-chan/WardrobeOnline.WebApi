@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WardrobeOnline.BLL.Models;
+using WardrobeOnline.BLL.Services.Interfaces;
 
 namespace WardrobeOnline.WebApi.Controllers
 {
@@ -10,38 +12,55 @@ namespace WardrobeOnline.WebApi.Controllers
     [ApiController]
     public class ClothesController : ControllerBase
     {
-        [HttpGet("Person/{id}")]
-        public IResult GetPersonClothes(int id)
-        {
-            throw new NotImplementedException();
-        }
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClothDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpGet("{id}")]
-        public IResult GetCloth(int id)
+        public async Task<IResult> Get(int id, [FromServices] IValidationLayer<ClothDTO> validationLayer)
         {
-            throw new NotImplementedException();
-        }
-        [HttpPost("Add/{name}")]
-        public IResult AddCloth(string name)
-        {
-            throw new NotImplementedException();
+            (ErrorResponse? errorResponse, ClothDTO? dto) = await validationLayer.Get(id);
+
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+            else
+                return TypedResults.Ok(dto);
         }
 
-        [HttpPost("Update/{id}")]
-        public IResult UpdateCloth(int id)
-        {
-            throw new NotImplementedException();
-        }
-
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpDelete("{id}")]
-        public IResult DeleteCloth(int id)
+        public async Task<IResult> Delete(int id, [FromServices] IValidationLayer<ClothDTO> validationLayer)
         {
-            throw new NotImplementedException();
+            ErrorResponse? errorResponse = await validationLayer.Delete(id);
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+
+            return TypedResults.NoContent();
         }
 
-        [HttpPost("Photo/{id}")]
-        public IResult PostPhoto(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClothDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [HttpPost]
+        public async Task<IResult> Create([FromBody] ClothDTO setDTO, [FromServices] IValidationLayer<ClothDTO> validationLayer)
         {
-            throw new NotImplementedException();
+            (ErrorResponse? errorResponse, ClothDTO? dto) = await validationLayer.Post(setDTO);
+
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+            else
+                return TypedResults.Ok(dto);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClothDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [HttpPut("{id?}")]
+        public async Task<IResult> Update(int? id, [FromBody] ClothDTO setDTO, [FromServices] IValidationLayer<ClothDTO> validationLayer)
+        {
+            (ErrorResponse? errorResponse, ClothDTO? dto) = await validationLayer.Post(setDTO);
+
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+            else
+                return TypedResults.Ok(dto);
         }
     }
 }

@@ -77,7 +77,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
                 cloth.Description = clothDTO.Description;
 
             if(clothDTO.Rating is not null)
-                cloth.Rating = clothDTO.Rating;
+                cloth.Rating = clothDTO.Rating.Value;
 
             if(clothDTO.Size is not null)
                 cloth.Size = clothDTO.Size;
