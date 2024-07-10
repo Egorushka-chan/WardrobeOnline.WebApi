@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using WardrobeOnline.BLL.Models;
+using WardrobeOnline.BLL.Models.Interfaces;
 using WardrobeOnline.BLL.Services.Implementations;
 using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
@@ -14,6 +15,11 @@ namespace WardrobeOnline.BLL
             services.AddTransient<ICRUDProvider<PhysiqueDTO>, PhysiqueProvider>();
             services.AddTransient<ICRUDProvider<SetDTO>, SetProvider>();
             services.AddTransient<ICRUDProvider<PersonDTO>, PersonProvider>();
+
+            services.ConfigureValidationLayer<ClothDTO>();
+            services.ConfigureValidationLayer<PhysiqueDTO>();
+            services.ConfigureValidationLayer<SetDTO>();
+            services.ConfigureValidationLayer<PersonDTO>();
 
             services.AddTransient<IPaginationService<Person>, PageService<Person>>();
             services.AddTransient<IPaginationService<Set>, PageService<Set>>();
@@ -32,5 +38,11 @@ namespace WardrobeOnline.BLL
             services.AddTransient<ICastHelper, CastHelper>();
             //services.AddTransient<IGeneralInfoProvider, GeneralInfoProvider>();
         }
+
+        private static void ConfigureValidationLayer<TEntityDTO>(this IServiceCollection services) where TEntityDTO : class, IEntityDTO
+        {
+            services.AddTransient<IValidationLayer<TEntityDTO>, ValidationLayer<TEntityDTO>>();
+        }
     }
+
 }

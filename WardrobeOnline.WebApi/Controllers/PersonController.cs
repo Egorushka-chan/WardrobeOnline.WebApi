@@ -66,15 +66,9 @@ namespace WardrobeOnline.WebApi.Controllers
                 errorResponse.Body = "Body contains no info";
                 return TypedResults.BadRequest(errorResponse);
             }
-
-            bool passed = await crudProvider.TryAdd(personDTO) is not null;
-            PersonDTO? responseDTO = personDTO;
-
-            if (personDTO.ID != default)
-            {
-                responseDTO = await crudProvider.TryGetAsync(personDTO.ID);
-                passed = passed && responseDTO is not null;
-            }
+            
+            PersonDTO? responseDTO = await crudProvider.TryAdd(personDTO);
+            bool passed = responseDTO is not null;
 
             if (!passed)
             {

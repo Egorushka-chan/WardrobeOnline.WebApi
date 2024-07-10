@@ -50,6 +50,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
                 return null;
 
             _context.DBSet<TEntityDB>().Add(entityDB);
+            int result = await SaveChanges();
             return await AddTranslateToDTO(entityDB);
         }
 
@@ -72,7 +73,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
             TEntityDB? cloth = await UpdateTranslateToDB(entity);
             if (cloth == null)
                 return null;
-
+            await SaveChanges();
             return await UpdateTranslateToDTO(cloth);
         }
 
