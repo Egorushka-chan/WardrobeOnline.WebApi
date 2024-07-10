@@ -64,17 +64,17 @@ namespace WardrobeOnline.BLL.Services.Implementations
 
         public async Task<bool> TryRemoveAsync(int id)
         {
-            int deleted = await _context.Clothes.Where(ent => ent.ID == id).ExecuteDeleteAsync();
+            int deleted = await _context.DBSet<TEntityDB>().Where(ent => ent.ID == id).ExecuteDeleteAsync();
             return deleted > 0;
         }
 
         public async Task<TEntityDTO?> TryUpdateAsync(TEntityDTO entity)
         {
-            TEntityDB? cloth = await UpdateTranslateToDB(entity);
-            if (cloth == null)
+            TEntityDB? entityDB = await UpdateTranslateToDB(entity);
+            if (entityDB == null)
                 return null;
             await SaveChangesAsync();
-            return await UpdateTranslateToDTO(cloth);
+            return await UpdateTranslateToDTO(entityDB);
         }
 
         public async Task<int> SaveChangesAsync()

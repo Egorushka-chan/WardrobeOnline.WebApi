@@ -1,10 +1,12 @@
 @HostAddress = http://localhost:5214
 
-PUT {{HostAddress}}/api/Person/
+PUT {{HostAddress}}/api/Set/1
 Content-Type: application/json
 
 {
-  "id": 2,
-  "name": "кошка (изм3)"
+  "clothIDs": [
+    "2",
+    "3"
+  ]
 }
 ###

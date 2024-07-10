@@ -52,7 +52,7 @@ namespace WardrobeOnline.WebApi.Controllers
         [HttpPut("{id?}")]
         public async Task<IResult> Update(int? id, [FromBody] SetDTO setDTO, [FromServices] IValidationLayer<SetDTO> validationLayer)
         {
-            (ErrorResponse? errorResponse, SetDTO? dto) = await validationLayer.Post(setDTO);
+            (ErrorResponse? errorResponse, SetDTO? dto) = await validationLayer.Put(id, setDTO);
 
             if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);

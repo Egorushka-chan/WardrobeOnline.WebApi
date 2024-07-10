@@ -14,6 +14,6 @@ namespace WardrobeOnline.DAL.Entities
         [Required, ForeignKey("SetForeignKey")]
         public int SetID { get; set; }
         public virtual Cloth? Cloth { get; set; }
-        public virtual Set? Sets { get; set; }
+        public virtual Set? Set { get; set; }
     }
 }

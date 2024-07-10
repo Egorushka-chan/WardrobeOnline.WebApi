@@ -31,10 +31,13 @@ namespace WardrobeOnline.BLL.Services.Implementations
 
         public void AssertSetSeason(string season, Set setDB)
         {
-            var searchedSeason = _context.Seasons.Where(ent => ent.Name == season).FirstOrDefault();
+            var searchedSeason = _context.Seasons.Where(ent => ent.Name == season)
+                .FirstOrDefault();
             if(searchedSeason != null) {
                 setDB.SeasonID = searchedSeason.ID;
-                setDB.Season = searchedSeason;
+                
+                //TODO: непонятный баг добавляет новую сущность, а не указывает на текущую
+                //setDB.Season = searchedSeason;
             }
             else
             {
@@ -50,20 +53,34 @@ namespace WardrobeOnline.BLL.Services.Implementations
                                     where !clothIDs.Contains(dbCloth.ID)
                                     select dbCloth;
 
-            var notMatchedDTOMaterials = from clothID in clothIDs
-                                         let existedIDs = from dbCloth in dbClothes
-                                                            select dbCloth.ID
-                                         where !existedIDs.Contains(clothID)
-                                         select clothID;
+            IEnumerable<int> notMatchedDTOCloths;
+            if (dbClothes.Count() == 0)
+            {
+                notMatchedDTOCloths = clothIDs;
+            }
+            else
+            {
+                 notMatchedDTOCloths = from clothID in clothIDs
+                                          let existedIDs = from dbCloth in dbClothes
+                                                           select dbCloth.ID
+                                          where !existedIDs.Contains(clothID)
+                                          select clothID;
+            }
+            
 
             foreach (Cloth nonMatched in notMatchedDBCloths)
             {
                 setDB.SetHasClothes.Remove(setDB.SetHasClothes.Where(cm => cm.ClothID == nonMatched.ID).First());
             }
 
-            if(notMatchedDTOMaterials.Count() > 0)
+            foreach (int nonMatched in notMatchedDTOCloths)
             {
-                throw new FormatException("Can't update set clothes through SetsDTO");
+                SetHasClothes setHasClothes = new()
+                {
+                    ClothID = nonMatched,
+                    SetID = setDB.ID
+                };
+                setDB.SetHasClothes.Add(setHasClothes);
             }
         }
 
@@ -89,7 +106,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
 
             if (notMatchedDTOSets.Count() > 0)
             {
-                throw new FormatException("Can't update physique sets through PhysiqueDTO");
+                throw new FormatException("Can't add physique sets through PhysiqueDTO");
             }
         }
 
@@ -115,7 +132,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
 
             if (notMatchedDTOPhysiques.Count() > 0)
             {
-                throw new FormatException("Can't update person physiques through PersonDTO");
+                throw new FormatException("Can't add person physiques through PersonDTO");
             }
         }
 

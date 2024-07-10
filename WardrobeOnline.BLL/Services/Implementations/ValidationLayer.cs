@@ -11,7 +11,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
     {
         public async Task<ErrorResponse?> Delete(int id)
         {
-            if(IsCorrectID(id))
+            if(IsNotCorrectID(id))
             {
                 ErrorResponse errorResponse = new ErrorResponse();
                 errorResponse.Body = "ID sent by client is invalid";
@@ -33,7 +33,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
 
         public async Task<(ErrorResponse?, TEntityDTO?)> Get(int id)
         {
-            if (IsCorrectID(id))
+            if (IsNotCorrectID(id))
             {
                 ErrorResponse errorResponse = new ErrorResponse();
                 errorResponse.Body = "ID sent by client is invalid";
@@ -92,7 +92,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
 
             id = id is null ? entityDTO.ID : id; // выбираем ID; id в запросе приоритетен
 
-            if (IsCorrectID(id.Value))
+            if (IsNotCorrectID(id.Value))
             {
                 ErrorResponse errorResponse = new ErrorResponse();
                 errorResponse.Body = "ID sent by client is invalid";
@@ -116,6 +116,6 @@ namespace WardrobeOnline.BLL.Services.Implementations
             return (null, responseDTO);
         }
 
-        private bool IsCorrectID(int id) => id > 0;
+        private bool IsNotCorrectID(int id) => id < 1;
     }
 }

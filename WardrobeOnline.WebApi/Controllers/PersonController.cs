@@ -52,7 +52,7 @@ namespace WardrobeOnline.WebApi.Controllers
         [HttpPut("{id?}")]
         public async Task<IResult> UpdatePersonInfo(int? id, [FromBody] PersonDTO personDTO, [FromServices] IValidationLayer<PersonDTO> validationLayer)
         {
-            (ErrorResponse? errorResponse, PersonDTO? dto) = await validationLayer.Post(personDTO);
+            (ErrorResponse? errorResponse, PersonDTO? dto) = await validationLayer.Put(id,personDTO);
 
             if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
@@ -101,9 +101,9 @@ namespace WardrobeOnline.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpPut("Physique/{id}")]
-        public async Task<IResult> UpdatePhysique(int id, [FromBody] PhysiqueDTO physiqueDTO, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
+        public async Task<IResult> UpdatePhysique(int? id, [FromBody] PhysiqueDTO physiqueDTO, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
         {
-            (ErrorResponse? errorResponse, PhysiqueDTO? dto) = await validationLayer.Post(physiqueDTO);
+            (ErrorResponse? errorResponse, PhysiqueDTO? dto) = await validationLayer.Put(id, physiqueDTO);
 
             if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
