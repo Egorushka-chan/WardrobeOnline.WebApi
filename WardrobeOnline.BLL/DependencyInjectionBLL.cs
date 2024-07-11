@@ -2,6 +2,8 @@
 using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Models.Interfaces;
 using WardrobeOnline.BLL.Services.Implementations;
+using WardrobeOnline.BLL.Services.Implementations.CRUD;
+using WardrobeOnline.BLL.Services.Implementations.Pagination;
 using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
 
@@ -21,10 +23,10 @@ namespace WardrobeOnline.BLL
             services.ConfigureValidationLayer<SetDTO>();
             services.ConfigureValidationLayer<PersonDTO>();
 
-            services.AddTransient<IPaginationService<Person>, PageService<Person>>();
-            services.AddTransient<IPaginationService<Set>, PageService<Set>>();
-            services.AddTransient<IPaginationService<Physique>, PageService<Physique>>();
-            services.AddTransient<IPaginationService<Cloth>, PageService<Cloth>>();
+            services.AddTransient<IPaginationService<Person>, GeneralPageService<Person>>();
+            services.AddTransient<IPaginationService<Set>, GeneralPageService<Set>>();
+            services.AddTransient<IPaginationService<Physique>, GeneralPageService<Physique>>();
+            services.AddTransient<IPaginationService<Cloth>, GeneralPageService<Cloth>>();
 
             if(imageServerType == "web")
             {
@@ -36,7 +38,15 @@ namespace WardrobeOnline.BLL
             }
 
             services.AddTransient<ICastHelper, CastHelper>();
-            //services.AddTransient<IGeneralInfoProvider, GeneralInfoProvider>();
+
+            services.AddStackExchangeRedisCache(opt =>
+            {
+                opt.Configuration = "localhost";
+                opt.InstanceName = "local";
+            });
+
+            services.AddScoped<IGeneralInfoProvider, GeneralInfoProvider>();
+            
         }
 
         private static void ConfigureValidationLayer<TEntityDTO>(this IServiceCollection services) where TEntityDTO : class, IEntityDTO

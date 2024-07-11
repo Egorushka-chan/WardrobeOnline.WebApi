@@ -12,20 +12,20 @@ namespace WardrobeOnline.DAL
     {
         public static void AddDataLayer(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<IWardrobeContext, WardrobeContext>(opt => opt.UseNpgsql(connectionString), contextLifetime: ServiceLifetime.Transient);
+            services.AddDbContext<IWardrobeContext, WardrobeContext>(opt => opt.UseNpgsql(connectionString), contextLifetime: ServiceLifetime.Scoped);
             //services.AddTransient<IWardrobeContext, WardrobeContext>();
-            services.ConfigureEntity<Person>();
-            services.ConfigureEntity<Cloth>();
-            services.ConfigureEntity<ClothHasMaterials>();
-            services.ConfigureEntity<Physique>();
-            services.ConfigureEntity<Material>();
-            services.ConfigureEntity<Photo>();
-            services.ConfigureEntity<Season>();
-            services.ConfigureEntity<Set>();
-            services.ConfigureEntity<SetHasClothes>();
+            //services.ConfigureEntity<Person>();
+            //services.ConfigureEntity<Cloth>();
+            //services.ConfigureEntity<ClothHasMaterials>();
+            //services.ConfigureEntity<Physique>();
+            //services.ConfigureEntity<Material>();
+            //services.ConfigureEntity<Photo>();
+            //services.ConfigureEntity<Season>();
+            //services.ConfigureEntity<Set>();
+            //services.ConfigureEntity<SetHasClothes>();
         }
 
-        public static void ConfigureEntity<T>(this IServiceCollection services) where T : class, IEntity
+        private static void ConfigureEntity<T>(this IServiceCollection services) where T : class, IEntity
         {
             services.AddTransient<IRepository<T>, Repository<T>>();
         }

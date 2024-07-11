@@ -9,6 +9,6 @@ namespace WardrobeOnline.BLL.Services.Interfaces
         Task<(ErrorResponse?, TEntityDTO?)> Get(int id);
         Task<(ErrorResponse?, TEntityDTO?)> Put(int? id, TEntityDTO entityDTO);
         Task<ErrorResponse?> Delete(int id);
-
+        Task<(ErrorResponse?, IReadOnlyList<TEntityDTO>? entityDTOs)> GetPaged(int page, int pageQuantity);
     }
 }

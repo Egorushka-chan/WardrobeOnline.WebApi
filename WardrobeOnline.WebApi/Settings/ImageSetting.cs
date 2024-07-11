@@ -2,7 +2,7 @@
 {
     public class ImageSetting
     {
-        public string Type { get; set; } = "local"; // default значения
-        public string Path { get; set; } = "S:\\repos\\ASP\\Images";
+        public string Type { get; set; }
+        public string Path { get; set; }
     }
 }

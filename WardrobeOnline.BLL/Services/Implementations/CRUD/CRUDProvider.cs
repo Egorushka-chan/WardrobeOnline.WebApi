@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Models.Interfaces;
@@ -10,9 +11,9 @@ using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Interfaces;
 using WardrobeOnline.DAL.Repositories.Interfaces;
 
-namespace WardrobeOnline.BLL.Services.Implementations
+namespace WardrobeOnline.BLL.Services.Implementations.CRUD
 {
-    public abstract class CRUDProvider<TEntityDTO, TEntityDB> 
+    public abstract class CRUDProvider<TEntityDTO, TEntityDB>
         : ICRUDProvider<TEntityDTO>
         where TEntityDTO : class, IEntityDTO
         where TEntityDB : class, IEntity
@@ -30,13 +31,13 @@ namespace WardrobeOnline.BLL.Services.Implementations
             _imageProvider = imageProvider;
         }
 
-        
-        public async Task<IReadOnlyCollection<TEntityDTO>> GetPagedQuantity(int pageIndex, int pageSize)
+        public async Task<IReadOnlyList<TEntityDTO>> GetPagedQuantity(int pageIndex, int pageSize)
         {
-            var list = _pagination.GetPagedQuantityOf(pageIndex, pageSize);
+            var list = await _pagination.GetPagedQuantityOf(pageIndex, pageSize);
 
             List<TEntityDTO> resultList = [];
-            foreach ( var item in list ) {
+            foreach (var item in list)
+            {
                 var itemDTO = await GetTranslateToDTO(item);
                 resultList.Add(itemDTO);
             }
@@ -46,7 +47,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
         public async Task<TEntityDTO?> TryAddAsync(TEntityDTO entity)
         {
             TEntityDB? entityDB = await AddTranslateToDB(entity);
-            if (entityDB == null) 
+            if (entityDB == null)
                 return null;
 
             _context.DBSet<TEntityDB>().Add(entityDB);

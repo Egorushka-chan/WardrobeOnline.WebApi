@@ -12,8 +12,9 @@ namespace WardrobeOnline.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [HttpGet("{id}")]
-        public async Task<IResult> GetPersonInfo(int id, [FromServices] IValidationLayer<PersonDTO> validationLayer)
+        public async Task<IResult> GetPersonInfo(int id, [FromServices] IValidationLayer<PersonDTO> validationLayer, [FromServices] ILogger<PersonController> logger)
         {
+            logger.LogInformation("Get Person Request at {0}", DateTime.Now);
             (ErrorResponse? errorResponse, PersonDTO? dto) = await validationLayer.Get(id);
 
             if(errorResponse != null)

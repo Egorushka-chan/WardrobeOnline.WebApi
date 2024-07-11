@@ -10,7 +10,6 @@ using System.Xml.Linq;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
 using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Services.Extensions;
 using WardrobeOnline.BLL.Services.Interfaces;
@@ -18,11 +17,11 @@ using WardrobeOnline.DAL;
 using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Interfaces;
 
-namespace WardrobeOnline.BLL.Services.Implementations
+namespace WardrobeOnline.BLL.Services.Implementations.CRUD
 {
     public class ClothProvider : CRUDProvider<ClothDTO, Cloth>
     {
-        public ClothProvider(IWardrobeContext context, IPaginationService<Cloth> pagination, ICastHelper castHelper, IImageProvider imageProvider) 
+        public ClothProvider(IWardrobeContext context, IPaginationService<Cloth> pagination, ICastHelper castHelper, IImageProvider imageProvider)
             : base(context, pagination, castHelper, imageProvider)
         {
 
@@ -41,7 +40,7 @@ namespace WardrobeOnline.BLL.Services.Implementations
                 ID = clothDB.ID,
                 Name = clothDB.Name,
                 Materials = (from clothMaterial in clothDB.ClothHasMaterials
-                            select clothMaterial.Material.Name).ToList(),
+                             select clothMaterial.Material.Name).ToList(),
                 Rating = clothDB.Rating,
                 Size = clothDB.Size,
                 PhotoPaths = _castHelper.GetPhotoPaths(clothDB.Photos)
@@ -51,7 +50,8 @@ namespace WardrobeOnline.BLL.Services.Implementations
         protected override async Task<Cloth?> AddTranslateToDB(ClothDTO clothDTO)
         {
             clothDTO.TranslateToDB(out Cloth? clothDB, _castHelper);
-            if (clothDTO.Materials != null) {
+            if (clothDTO.Materials != null)
+            {
                 _castHelper.AssertClothMaterials(clothDTO.Materials, clothDB);
             }
 
@@ -70,19 +70,19 @@ namespace WardrobeOnline.BLL.Services.Implementations
             if (cloth == null)
                 return null;
 
-            if(clothDTO.Name is not null)
+            if (clothDTO.Name is not null)
                 cloth.Name = clothDTO.Name;
-            
-            if(clothDTO.Description is not null)
+
+            if (clothDTO.Description is not null)
                 cloth.Description = clothDTO.Description;
 
-            if(clothDTO.Rating is not null)
+            if (clothDTO.Rating is not null)
                 cloth.Rating = clothDTO.Rating.Value;
 
-            if(clothDTO.Size is not null)
+            if (clothDTO.Size is not null)
                 cloth.Size = clothDTO.Size;
 
-            if(clothDTO.Materials is not null)
+            if (clothDTO.Materials is not null)
                 _castHelper.AssertClothMaterials(clothDTO.Materials, cloth);
 
             return cloth;

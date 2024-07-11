@@ -7,7 +7,8 @@ using WardrobeOnline.DAL.Interfaces;
 
 namespace WardrobeOnline.BLL.Services.Implementations
 {
-    public class ValidationLayer<TEntityDTO>(ICRUDProvider<TEntityDTO> _crudProvider) : IValidationLayer<TEntityDTO> where TEntityDTO : class, IEntityDTO
+    public class ValidationLayer<TEntityDTO>(
+        ICRUDProvider<TEntityDTO> _crudProvider) : IValidationLayer<TEntityDTO> where TEntityDTO : class, IEntityDTO
     {
         public async Task<ErrorResponse?> Delete(int id)
         {
@@ -52,6 +53,49 @@ namespace WardrobeOnline.BLL.Services.Implementations
             }
 
             return (null, responseDTO);
+        }
+
+        public async Task<(ErrorResponse?, IReadOnlyList<TEntityDTO>? entityDTOs)> GetPaged(int page, int pageQuantity)
+        {
+            if (page < 1)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Page cannot be below 1";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            if (pageQuantity < 2)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = "Page quantity cannot be below 2";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            IReadOnlyList<TEntityDTO> paged;
+
+            try
+            {
+                paged = await _crudProvider.GetPagedQuantity(page, pageQuantity);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = $"{ex.Message}. ActualValue = {ex.ActualValue}";
+                errorResponse.Code = (int)HttpStatusCode.BadRequest;
+                return (errorResponse, null);
+            }
+
+            if(paged.Count == 0)
+            {
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Body = $"By unknown error, resulted page was empty";
+                errorResponse.Code = (int)HttpStatusCode.InternalServerError;
+                return (errorResponse, null);
+            }
+
+            return (null, paged);
         }
 
         public async Task<(ErrorResponse?, TEntityDTO?)> Post(TEntityDTO entityDTO)

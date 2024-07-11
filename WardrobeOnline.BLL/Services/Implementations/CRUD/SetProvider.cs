@@ -1,7 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
 using Microsoft.EntityFrameworkCore;
-
 using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Services.Extensions;
 using WardrobeOnline.BLL.Services.Interfaces;
@@ -9,11 +8,11 @@ using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Interfaces;
 using WardrobeOnline.DAL.Repositories.Interfaces;
 
-namespace WardrobeOnline.BLL.Services.Implementations
+namespace WardrobeOnline.BLL.Services.Implementations.CRUD
 {
     public class SetProvider : CRUDProvider<SetDTO, Set>
     {
-        public SetProvider(IWardrobeContext context, IPaginationService<Set> pagination, ICastHelper castHelper, IImageProvider imageProvider) 
+        public SetProvider(IWardrobeContext context, IPaginationService<Set> pagination, ICastHelper castHelper, IImageProvider imageProvider)
             : base(context, pagination, castHelper, imageProvider)
         {
 
@@ -24,7 +23,8 @@ namespace WardrobeOnline.BLL.Services.Implementations
             entityDTO.TranslateToDB(out Set? setDB, _castHelper);
             _castHelper.AssertSetSeason(entityDTO.Season, setDB);
 
-            if(entityDTO.ClothIDs != null) {
+            if (entityDTO.ClothIDs != null)
+            {
                 _castHelper.AssertSetClothes(entityDTO.ClothIDs, setDB);
             }
 
@@ -57,20 +57,20 @@ namespace WardrobeOnline.BLL.Services.Implementations
             Set? setDB = await GetFromDBbyID(entityDTO.ID);
             if (setDB == null)
                 return null;
-            
-            if(entityDTO.Name is not null)
+
+            if (entityDTO.Name is not null)
                 setDB.Name = entityDTO.Name;
 
-            if(entityDTO.Description is not null)
+            if (entityDTO.Description is not null)
                 setDB.Description = entityDTO.Description;
 
-            if(entityDTO.Season is not null)
+            if (entityDTO.Season is not null)
                 _castHelper.AssertSetSeason(entityDTO.Season, setDB);
 
-            if(entityDTO.PhysiqueID is not null)
+            if (entityDTO.PhysiqueID is not null)
                 setDB.PhysiqueID = entityDTO.PhysiqueID.Value;
 
-            if(entityDTO.ClothIDs is not null)
+            if (entityDTO.ClothIDs is not null)
                 _castHelper.AssertSetClothes(entityDTO.ClothIDs, setDB);
 
             return setDB;

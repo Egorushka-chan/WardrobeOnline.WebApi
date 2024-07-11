@@ -1,11 +1,12 @@
 ﻿namespace WardrobeOnline.BLL.Services.Interfaces
 {
+    /// <summary>
+    /// Работает с информацией,которая может хранится в кэше
+    /// </summary>
     public interface IGeneralInfoProvider
     {
-        public int GetTotalSetCount();
-        public int GetPersonSetCount();
-        public int GetTotalPersonCount();
-        public int GetPersonClothCount();
-        public int GetSetClothCount();
+        public Task<int> GetPersonSetCount(int id, CancellationToken token = default);
+        public Task<int> GetTotalPersonCount(CancellationToken token = default);
+        public Task<int> GetPersonClothCount(int id, CancellationToken token = default);
     }
 }

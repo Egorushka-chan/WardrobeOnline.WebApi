@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
 using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Services.Extensions;
 using WardrobeOnline.BLL.Services.Interfaces;
@@ -7,11 +6,11 @@ using WardrobeOnline.DAL.Entities;
 using WardrobeOnline.DAL.Interfaces;
 using WardrobeOnline.DAL.Repositories.Interfaces;
 
-namespace WardrobeOnline.BLL.Services.Implementations
+namespace WardrobeOnline.BLL.Services.Implementations.CRUD
 {
     public class PhysiqueProvider : CRUDProvider<PhysiqueDTO, Physique>
     {
-        public PhysiqueProvider(IWardrobeContext context, IPaginationService<Physique> pagination, ICastHelper castHelper, IImageProvider imageProvider) 
+        public PhysiqueProvider(IWardrobeContext context, IPaginationService<Physique> pagination, ICastHelper castHelper, IImageProvider imageProvider)
             : base(context, pagination, castHelper, imageProvider)
         {
 
@@ -22,7 +21,8 @@ namespace WardrobeOnline.BLL.Services.Implementations
         {
             entityDTO.TranslateToDB(out Physique? physiqueDB, _castHelper);
 
-            if(entityDTO.SetIDs != null) {
+            if (entityDTO.SetIDs != null)
+            {
                 _castHelper.AssertPhysiqueSets(entityDTO.SetIDs, physiqueDB);
             }
 
@@ -44,14 +44,14 @@ namespace WardrobeOnline.BLL.Services.Implementations
         protected override async Task<PhysiqueDTO?> GetTranslateToDTO(Physique entityDB)
         {
             entityDB.TranslateToDTO(out PhysiqueDTO? resultDTO, _castHelper);
-            if (resultDTO == null) 
+            if (resultDTO == null)
                 return null;
-            
-            if(entityDB.Sets.Count > 0)
+
+            if (entityDB.Sets.Count > 0)
             {
                 List<int> setIDs = (from Set set in entityDB.Sets
-                                         select set.ID).ToList();
-                resultDTO = resultDTO with { SetIDs =  setIDs };
+                                    select set.ID).ToList();
+                resultDTO = resultDTO with { SetIDs = setIDs };
             }
 
             return resultDTO;
@@ -62,23 +62,23 @@ namespace WardrobeOnline.BLL.Services.Implementations
             Physique? physiqueDB = await GetFromDBbyID(entityDTO.ID);
             if (physiqueDB == null)
                 return null;
-            
-            if(entityDTO.Weight is not null)
+
+            if (entityDTO.Weight is not null)
                 physiqueDB.Weight = entityDTO.Weight.Value;
 
-            if(entityDTO.Force is not null)
+            if (entityDTO.Force is not null)
                 physiqueDB.Force = entityDTO.Force.Value;
 
-            if(entityDTO.Growth is not null)
+            if (entityDTO.Growth is not null)
                 physiqueDB.Growth = entityDTO.Growth.Value;
 
-            if(entityDTO.Description is not null)
+            if (entityDTO.Description is not null)
                 physiqueDB.Description = entityDTO.Description;
 
-            if(entityDTO.PersonID is not null)
+            if (entityDTO.PersonID is not null)
                 physiqueDB.PersonID = entityDTO.PersonID.Value;
 
-            if(entityDTO.SetIDs is not null)
+            if (entityDTO.SetIDs is not null)
                 _castHelper.AssertPhysiqueSets(entityDTO.SetIDs, physiqueDB);
 
             return physiqueDB;

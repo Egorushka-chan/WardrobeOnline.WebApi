@@ -1,15 +1,19 @@
-global using WardrobeOnline.DAL;
-global using WardrobeOnline.WebApi;
+using WardrobeOnline.DAL;
 using WardrobeOnline.BLL;
-
 using Microsoft.Extensions.FileProviders;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Связь с остальными слоями
-builder.Services.AddDataLayer("Host=localhost;Port=5432;Database=wardrobe;Username=postgres;Password=root");
+builder.Services.AddDataLayer(builder.Configuration["ConnectionStrings:Postgresql"]);
 builder.Services.AddBusinessLayer();
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -24,14 +28,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Сервер изображений
 if (app.Configuration["ImageSetting:Type"] == "local")
 {
+    string? path = app.Configuration["ImageSetting:Path"];
+    if (!Path.Exists(path))
+    {
+        path = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+    }
+
     app.UseStaticFiles(new StaticFileOptions()
     {
-        FileProvider = new PhysicalFileProvider(app.Configuration["ImageSetting:Path"])
+        FileProvider = new PhysicalFileProvider(path),
+        RequestPath = new PathString("/images"),
+        ServeUnknownFileTypes = true
     });
 }
-
 
 
 app.UseHttpsRedirection();
