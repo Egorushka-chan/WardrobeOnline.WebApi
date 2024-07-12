@@ -2,6 +2,8 @@ using WardrobeOnline.DAL;
 using WardrobeOnline.BLL;
 using Microsoft.Extensions.FileProviders;
 using Serilog;
+using WardrobeOnline.WebApi.Settings;
+using WardrobeOnline.BLL.Models.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +14,14 @@ string connectionString = builder.Configuration["ConnectionStrings:Postgresql"] 
     $"Username={builder.Configuration["POSTGRES_USER"]};" +
     $"Password={builder.Configuration["POSTGRES_PASSWORD"]};";
 
+builder.Services.Configure<ImageSetting>(
+    builder.Configuration.GetSection("ImageSetting"));
+
+builder.Services.Configure<RedisSetting>(
+    builder.Configuration.GetSection("RedisSetting"));
+
 builder.Services.AddDataLayer(connectionString);
-builder.Services.AddBusinessLayer();
+builder.Services.AddBusinessLayer(builder.Configuration.Get<ImageSetting>(), builder.Configuration.Get<RedisSetting>());
 
 builder.Host.UseSerilog((context, configuration) =>
 {

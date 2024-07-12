@@ -1,17 +1,19 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using WardrobeOnline.BLL.Models;
 using WardrobeOnline.BLL.Models.Interfaces;
+using WardrobeOnline.BLL.Models.Settings;
 using WardrobeOnline.BLL.Services.Implementations;
 using WardrobeOnline.BLL.Services.Implementations.CRUD;
 using WardrobeOnline.BLL.Services.Implementations.Pagination;
 using WardrobeOnline.BLL.Services.Interfaces;
 using WardrobeOnline.DAL.Entities;
+using WardrobeOnline.WebApi.Settings;
 
 namespace WardrobeOnline.BLL
 {
     public static class DependencyInjectionBLL
     {
-        public static void AddBusinessLayer(this IServiceCollection services, string imageServerType = "local", string imagePath="/")
+        public static void AddBusinessLayer(this IServiceCollection services, ImageSetting imageSetting, RedisSetting redisSetting)
         {
             services.AddTransient<ICRUDProvider<ClothDTO>, ClothProvider>();
             services.AddTransient<ICRUDProvider<PhysiqueDTO>, PhysiqueProvider>();
@@ -28,7 +30,7 @@ namespace WardrobeOnline.BLL
             services.AddTransient<IPaginationService<Physique>, GeneralPageService<Physique>>();
             services.AddTransient<IPaginationService<Cloth>, GeneralPageService<Cloth>>();
 
-            if(imageServerType == "web")
+            if(imageSetting.Type == "web")
             {
                 services.AddSingleton<IImageProvider, WebImageProvider>();
             }
@@ -41,8 +43,8 @@ namespace WardrobeOnline.BLL
 
             services.AddStackExchangeRedisCache(opt =>
             {
-                opt.Configuration = "localhost";
-                opt.InstanceName = "local";
+                opt.Configuration = redisSetting.Configuration;
+                opt.InstanceName =  redisSetting.InstanceName;
             });
 
             services.AddScoped<IGeneralInfoProvider, GeneralInfoProvider>();
