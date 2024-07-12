@@ -41,7 +41,6 @@ if (app.Environment.IsDevelopment())
 
 app.Services.GetRequiredService<ILogger<Program>>().LogInformation(connectionString);
 
-// ������ �����������
 //if (app.Configuration["ImageSetting:Type"] == "local")
 //{
 //    string? path = app.Configuration["ImageSetting:Path"];
