@@ -7,7 +7,10 @@ namespace WardrobeOnline.DAL
 
     public class WardrobeContext : DbContext, IWardrobeContext
     {
-        public WardrobeContext(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
+        public WardrobeContext(DbContextOptions dbContextOptions) : base(dbContextOptions) 
+        {
+            this.Database.EnsureCreated();
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -7,7 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Связь с остальными слоями
-builder.Services.AddDataLayer(builder.Configuration["ConnectionStrings:Postgresql"]);
+
+string connectionString = builder.Configuration["ConnectionStrings:Postgresql"] +
+    $"Username={builder.Configuration["POSTGRES_USER"]};" +
+    $"Password={builder.Configuration["POSTGRES_PASSWORD"]};";
+
+builder.Services.AddDataLayer(connectionString);
 builder.Services.AddBusinessLayer();
 
 builder.Host.UseSerilog((context, configuration) =>
