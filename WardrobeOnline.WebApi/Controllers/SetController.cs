@@ -59,5 +59,18 @@ namespace WardrobeOnline.WebApi.Controllers
             else
                 return TypedResults.Ok(dto);
         }
+
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SetDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [HttpGet("page/{pageIndex}/{pageSize}")]
+        public async Task<IResult> GetPage(int pageIndex, int pageSize, [FromServices] IValidationLayer<SetDTO> validationLayer)
+        {
+            (ErrorResponse? errorResponse, IReadOnlyList<SetDTO>? list) = await validationLayer.GetPaged(pageIndex, pageSize);
+
+            if (errorResponse != null)
+                return TypedResults.BadRequest(errorResponse);
+            else
+                return TypedResults.Ok(list);
+        }
     }
 }

@@ -61,55 +61,17 @@ namespace WardrobeOnline.WebApi.Controllers
                 return TypedResults.Ok(dto);
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PersonDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        [HttpGet("Physique/{id}")]
-        public async Task<IResult> GetPersonPhysique(int id, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
+        [HttpGet("page/{pageIndex}/{pageSize}")]
+        public async Task<IResult> GetPage(int pageIndex, int pageSize, [FromServices] IValidationLayer<PersonDTO> validationLayer)
         {
-            (ErrorResponse? errorResponse, PhysiqueDTO? dto) = await validationLayer.Get(id);
+            (ErrorResponse? errorResponse, IReadOnlyList<PersonDTO>? list) = await validationLayer.GetPaged(pageIndex, pageSize);
 
             if (errorResponse != null)
                 return TypedResults.BadRequest(errorResponse);
             else
-                return TypedResults.Ok(dto);
-        }
-
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        [HttpPost("Physique/")]
-        public async Task<IResult> CreatePhysique([FromBody] PhysiqueDTO physiqueDTO, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
-        {
-            (ErrorResponse? errorResponse, PhysiqueDTO? dto) = await validationLayer.Post(physiqueDTO);
-
-            if (errorResponse != null)
-                return TypedResults.BadRequest(errorResponse);
-            else
-                return TypedResults.Ok(dto);
-        }
-
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        [HttpDelete("Physique/{id}")]
-        public async Task<IResult> DeletePhysique(int id, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
-        {
-            ErrorResponse? errorResponse = await validationLayer.Delete(id);
-            if (errorResponse != null)
-                return TypedResults.BadRequest(errorResponse);
-
-            return TypedResults.NoContent();
-        }
-
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhysiqueDTO))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        [HttpPut("Physique/{id}")]
-        public async Task<IResult> UpdatePhysique(int? id, [FromBody] PhysiqueDTO physiqueDTO, [FromServices] IValidationLayer<PhysiqueDTO> validationLayer)
-        {
-            (ErrorResponse? errorResponse, PhysiqueDTO? dto) = await validationLayer.Put(id, physiqueDTO);
-
-            if (errorResponse != null)
-                return TypedResults.BadRequest(errorResponse);
-            else
-                return TypedResults.Ok(dto);
+                return TypedResults.Ok(list);
         }
     }
 }

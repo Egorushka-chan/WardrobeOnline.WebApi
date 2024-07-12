@@ -19,7 +19,7 @@ namespace WardrobeOnline.BLL.Services.Implementations.Pagination
             int maxPage = totalCount / pageSize;
             if (totalCount % pageSize != 0)
                 maxPage++;
-            if (maxPage < pageIndex * pageSize) // проверка что страница не слишком большая
+            if (maxPage < pageIndex) // проверка что страница не слишком большая
             {
                 throw new ArgumentOutOfRangeException(nameof(pageIndex), totalCount, "Such page cannot be created");
             }
@@ -34,7 +34,7 @@ namespace WardrobeOnline.BLL.Services.Implementations.Pagination
             return _context.DBSet<TEntity>()
                 .Skip((pageIndex-1) * pageSize)
                 .Take(pageSize)
-                .OrderByDescending(d => d.ID)
+                .OrderBy(d => d.ID)
                 .ToListAsync();
         }
 

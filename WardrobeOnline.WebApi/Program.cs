@@ -19,7 +19,13 @@ builder.Services.Configure<RedisSetting>(
     builder.Configuration.GetSection("RedisSetting"));
 
 builder.Services.AddDataLayer(connectionString);
-builder.Services.AddBusinessLayer(builder.Configuration.Get<ImageSetting>(), builder.Configuration.Get<RedisSetting>());
+builder.Services.AddBusinessLayer(new ImageSetting() {
+    Path = builder.Configuration["ImageSetting:Path"],
+    Type = builder.Configuration["ImageSetting:Type"]
+}, new RedisSetting() {
+    Configuration = builder.Configuration["RedisSetting:Configuration"],
+    InstanceName = builder.Configuration["RedisSetting:InstanceName"]
+});
 
 builder.Host.UseSerilog((context, configuration) =>
 {

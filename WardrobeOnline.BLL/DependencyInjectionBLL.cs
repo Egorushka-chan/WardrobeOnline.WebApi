@@ -25,7 +25,7 @@ namespace WardrobeOnline.BLL
             services.ConfigureValidationLayer<SetDTO>();
             services.ConfigureValidationLayer<PersonDTO>();
 
-            services.AddTransient<IPaginationService<Person>, GeneralPageService<Person>>();
+            services.AddTransient<IPaginationService<Person>, GeneralPersonPageService>();
             services.AddTransient<IPaginationService<Set>, GeneralPageService<Set>>();
             services.AddTransient<IPaginationService<Physique>, GeneralPageService<Physique>>();
             services.AddTransient<IPaginationService<Cloth>, GeneralPageService<Cloth>>();
