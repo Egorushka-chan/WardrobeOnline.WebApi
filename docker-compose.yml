@@ -39,11 +39,10 @@ services:
     build:
       context: .
       dockerfile: WardrobeOnline.WebApi/Dockerfile
-    environment:
-    - POSTGRES_USER=${POSTGRES_USER}
-    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
     - internal
+    env_file:
+     - ./.env
     volumes:
     - api-data:/logs
     depends_on:

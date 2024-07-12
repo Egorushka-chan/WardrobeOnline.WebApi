@@ -6,11 +6,9 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-// Связь с остальными слоями
+// РЎРІСЏР·СЊ СЃ РѕСЃС‚Р°Р»СЊРЅС‹РјРё СЃР»РѕСЏРјРё
 
-string connectionString = builder.Configuration["ConnectionStrings:Postgresql"] +
-    $"Username={builder.Configuration["POSTGRES_USER"]};" +
-    $"Password={builder.Configuration["POSTGRES_PASSWORD"]};";
+string connectionString = builder.Configuration["ConnectionStrings:Postgresql"];
 
 builder.Services.AddDataLayer(connectionString);
 builder.Services.AddBusinessLayer();
@@ -33,25 +31,24 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Сервер изображений
-if (app.Configuration["ImageSetting:Type"] == "local")
-{
-    string? path = app.Configuration["ImageSetting:Path"];
-    if (!Path.Exists(path))
-    {
-        path = Path.Combine(Directory.GetCurrentDirectory(), "Images");
-    }
+app.Services.GetRequiredService<ILogger<Program>>().LogInformation(connectionString);
 
-    app.UseStaticFiles(new StaticFileOptions()
-    {
-        FileProvider = new PhysicalFileProvider(path),
-        RequestPath = new PathString("/images"),
-        ServeUnknownFileTypes = true
-    });
-}
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+//if (app.Configuration["ImageSetting:Type"] == "local")
+//{
+//    string? path = app.Configuration["ImageSetting:Path"];
+//    if (!Path.Exists(path))
+//    {
+//        path = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+//    }
 
-
-app.UseHttpsRedirection();
+    //app.UseStaticFiles(new StaticFileOptions()
+    //{
+    //    FileProvider = new PhysicalFileProvider(path),
+    //    RequestPath = new PathString("/images"),
+    //    ServeUnknownFileTypes = true
+    //});
+//}
 
 app.UseAuthorization();
 
